@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>Agregar usuario</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div class="container">
+            
+            <div class="form-container">
+                
+                <h3 class="text-center mb-4">
+                    Añadir un nuevo usuario
+                </h3>
+                
+                <form method="post" th:object="${usuario}" th:action="@{/usuario/formulario}" id="formularioAgregarUsuario" class="row">
+                   
+                    <div id="datosUsuario" class="container row">
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioNombre" class="form-label">Nombre</label>
+                            <input type="text" class="form-control" id="NombreUsuario" placeholder="Nombre"required th:field="*{Nombre}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                            <span id="errorNombreUsuario" style="color: red"></span>
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioApellidoPaterno" class="form-label">Apellido paterno</label>
+                            <input type="text" class="form-control" id="ApellidoPaterno" placeholder="Apellido paterno" required th:field="*{ApellidoPaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                            <span id="errorApellidoPaterno"></span>
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioApellidoMaterno" class="form-label">Apellido materno</label>
+                            <input type="text" class="form-control" id="ApellidoMaterno" placeholder="Apellido materno" th:field="*{ApellidoMaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                            <span id="errorApellidoMaterno"></span>
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioUsername" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="Username" placeholder="Username" required th:field="*{UserName}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)">
+                            <span id="errorUsername"></span>
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioFechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                            <input type="date" class="form-control" id="formularioFechaNacimiento" required th:field="*{FechaNacimiento}">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioEmail" class="form-label">Email</label>
+                            <input type="text" class="form-control" id="Email" placeholder="ejemplo@email.com" required th:field="*{Email}" onblur="Correo(this)">
+                            <span id="errorEmail">text</span>
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioPassword" class="form-label">Contraseña</label>
+                            <input type="password" class="form-control" id="formularioPassword" required th:field="*{Password}" onkeypress="PasswordValidacion(this, event)">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioNumeroTelefono" class="form-label">Número de teléfono</label>
+                            <input type="text" class="form-control" id="NumeroTelefono" placeholder="1234567890" th:field="*{Telefono}" onkeypress="SoloNumeros(this, event)" onblur="SoloNumerosBlur(this)">
+                            <span id="errorNumeroTelefono"></span>
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio"  name="radioSexo" th:value="F" th:field="*{Sexo}">
+                                <label for="formularioSexo" class="form-check-label">Femenino</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioSexo" th:value="M" th:field="*{Sexo}">
+                                <label for="formularioSexo" class="form-check-label">Masculino</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="radio" name="radioSexo" th:value="O" th:field="*{Sexo}">
+                                <label for="formularioSexo" class="form-check-label">Otro</label>
+                            </div>
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioRol" class="form-label">Rol en el sistema</label>
+                            <select id="formularioRol" class="form-select" th:field="*{Rol.IdRol}">
+                                <option value="0">Seleccionar un rol...</option>
+                                <option th:each="rol : ${roles}" th:value="${rol.IdRol}" th:text="${rol.Nombre}"></option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div id="datosDireccion" class="container row">
+                        
+                        <div class="mb-3 col-lg-3 col-md-4">
+                            <label for="formularioPais" class="form-label">Pais</label>
+                            <select id="ddlpais" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.Pais.IdPais}">
+                                <option value=0>Seleccione su pais...</option>
+                                <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-3 col-md-4">
+                            <label for="formularioEstado" class="for-label">Estado</label>
+                            <select id="ddlestado" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.IdEstado}">
+                                <option value=0>Seleccione un pais primero</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-3 col-md-4">
+                            <label for="formularioMunicipio" class="form-label">Municipio</label>
+                            <select id="ddlmunicipio" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.IdMunicipio}">
+                                <option value=0>Seleccionar un estado primero</option>
+                            </select>
+                        </div>
+                        <div class="mb-3 col-lg-3 mol-md-6">
+                            <label for="formularioColonia" class="form-label">Colonia:</label>
+                            <select id="ddlcolonia" class="form-select" th:field="*{Direcciones[0].Colonia.IdColonia}">
+                                <option value=0>Seleccione un municipio primero</option>
+                            </select>
+
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioCodigoPostal" class="form-label">Código postal</label>
+                            <input id="codigopostal" type="number" class="form-control" placeholder="12345" th:field="*{Direcciones[0].Colonia.CodigoPostal}" disabled>
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioCalle" class="form-label">Calle</label>
+                            <input type="text" class="form-control" id="formularioCalle" placeholder="Calle" th:field="*{Direcciones[0].Calle}">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
+                            <input type="text" class="form-control" placeholder="#10" th:field="*{Direcciones[0].NumeroInterior}">
+                        </div>
+                        <div class="mb-3 col-lg-4 col-md-6">
+                            <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
+                            <input type="text" class="form-control" placeholder="#123" th:field="*{Direcciones[0].NumeroExterior}">
+                        </div>
+                        <div class="mb-3 row">
+                            <button type="button" class="btn btn-danger col-lg-4">Cancelar</button>
+                            <button type="reset" class="btn btn-secondary col-lg-4">Borrar</button>
+                            <button type="submit" class="btn btn-success col-lg-4">Aceptar</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+    
+    <script>
+        
+        $(document).ready(function(){
+            
+            $("#ddlpais").change(function(){
+                
+                var IdPais = $("#ddlpais").val();
+                
+                if (IdPais != 0) {
+                    
+                    $.ajax({
+                        
+                        url:"getestadosbypais/" + IdPais,
+                        type: "GET",
+                        dataType: "json",
+                        success: function(data, textStatus, jqXHR){
+                            
+                            $("#ddlestado").empty();
+                            $("#ddlestado").append("<option value=0>Seleccione un estado</option>");
+                            $.each(data.objects, function(i, estado){
+                                
+                                console.log(estado.Nombre);
+                                $("#ddlestado").append("<option value=" + estado.IdEstado + ">" + estado.Nombre +"</option>");
+                                
+                            });
+                            
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            
+                            alert("No se pudo procesar la obtención de los ESTADOS");
+                            
+                        }
+                        
+                    });
+                    
+                } else {
+                    
+                    $("#ddlestado").empty();
+                    $("#ddlestado").append("<option value=0>Seleccione un pais primero</option>");
+                    
+                    $("#ddlmunicipio").empty();
+                    $("#ddlmunicipio").append("<option value=0>Seleccione un estado primero</option>");
+                    
+                    $("#ddlcolonia").empty();
+                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                    
+                    $("#codigopostal").empty();
+                    $("#codigopostal").val("12345");
+                    
+                }
+                
+            });
+            
+            $("#ddlestado").change(function(){
+                
+                var IdEstado = $("#ddlestado").val();
+                var IdPais = $("#ddlpais").val();
+                
+                if (IdEstado != 0) {
+                    
+                    $.ajax({
+                        
+                        url:"getmunicipiosbyestado/" + IdEstado,
+                        type:"GET",
+                        datatype:"json",
+                        success: function(data, textStatus, jqXHR){
+                            
+                            $("#ddlmunicipio").empty();
+                            $("#ddlmunicipio").append("<option value=0>Seleccione un municipio</option>");
+                            
+                            $("#ddlcolonia").empty();
+                            $("#ddlcolonia").append("<option value=0>Seleccione una colonia</option>");
+                            $.each(data.objects, function(i, municipio){
+                               
+                               $("#ddlmunicipio").append("<option value=" + municipio.IdMunicipio + ">" + municipio.Nombre + "</option>");
+        
+                            });
+                            
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            
+                            alert("No se pudo procesar la obtención de los MUNICIPIOS");
+                            
+                        }
+                        
+                    });
+                    
+                    
+                } else {
+                    
+                    $("#ddlmunicipio").empty();
+                    $("#ddlmunicipio").append("<option value=0>Seleccione un estado primero</option>");
+                    
+                    $("#ddlcolonia").empty();
+                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                    
+                    $("#codigopostal").empty();
+                    $("#codigopostal").val("12345");
+                    
+                }
+                
+            });
+            
+            $("#ddlmunicipio").change(function(){
+                
+                var IdMunicipio = $("#ddlmunicipio").val();
+                var IdEstado = $("#ddlestado").val();
+                var IdPais = $("#ddlpais").val();
+                
+                if (IdMunicipio != 0) {
+                    
+                    $.ajax({
+                        
+                        url:"getcoloniasbymunicipio/" + IdMunicipio,
+                        type:"GET",
+                        datatypes:"json",
+                        success: function(data, textStatus, jqXHR){
+                            
+                            $("#ddlcolonia").empty();
+                            $("#ddlcolonia").append("<option value=0>Seleccione una colonia</option>");
+                            $.each(data.objects, function(i, colonia){
+                                
+                                $("#ddlcolonia").append("<option value=" + colonia.IdColonia + " data-cp=" + colonia.CodigoPostal + ">" + colonia.Nombre + "</option>");
+                                
+                            });
+                            
+                        },
+                        error: function(jqXHR, textStatus, errorThrown){
+                            
+                            alert("No se pudo procesar la obtención de las COLONIAS");
+                            
+                        }
+                        
+                    });
+    
+                } else {
+                    
+                    $("#ddlcolonia").empty();
+                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                    
+                    $("#codigopostal").empty();
+                    $("#codigopostal").val("12345");
+                    
+                }
+                
+            });
+            
+            $("#ddlcolonia").change(function(){
+                
+                var IdColonia = $("#ddlcolonia").val();
+                
+                if (IdColonia != 0) {
+                    
+                    $("#codigopostal").val($("#ddlcolonia option:selected").data("cp"));  
+    
+                } else {
+                    
+                    $("#codigopostal").empty();
+                    $("#codigopostal").val("12345");
+                    
+                }
+                
+            });
+            
+        });
+        
+        function SoloLetras(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            console.log(valorCompleto);
+            
+            var regex = /^[a-zA-Z áéíóú]+$/;
+            
+            if (regex.test(valorCompleto)) {
+                
+                console.log("Paso la regex");
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                
+            } else {
+                
+                console.log("No paso la regex");
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Solo letras').css('color', 'red');
+                
+            }
+            
+        }
+        
+        function SoloLetrasBlur(input){
+            
+            var regex = /^[a-zA-Z áéíóú]+$/;
+            
+            if (regex.test($(input).val())) {
+    
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+    
+            }
+            
+        }
+        
+        function SoloNumeros(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            console.log(valorCompleto);
+            
+            var regex = /^[\d]{1,10}$/;
+            
+            if (regex.test(valorCompleto)) {
+                
+                console.log("Si paso la regex");
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+    
+            } else {
+                
+                console.log("No paso la regex");
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Solo numeros').css('color', 'red');
+                
+            }
+            
+        }
+        
+        function SoloNumerosBlur(input){
+            
+            var regex = /^[\d]{1,10}$/;
+            
+            if (regex.test($(input).val())) {
+                
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                
+            }
+            
+        }
+        
+        function LetrasYNumeros(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            
+            var regex = /^[a-zA-Z\d]{1,20}$/;
+            
+            if (valorCompleto.length > 20) {
+                
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id +'').text('No mayor a 20 carácteres').css('color', 'red');
+                
+            } else {
+                
+                if (regex.test(valorCompleto)) {
+                    
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+
+                } else {
+
+                    event.preventDefault();
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Sólo letras y números').css('color', 'red');
+
+                }
+                
+            }
+            
+        }
+        
+        function LetrasYNumerosBlur(input){
+            
+            var regex = /^[a-zA-Z\d]{1,20}$/;
+            
+            if (regex.test($(input).val())) {
+                
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                
+            }
+            
+        }
+        
+        function Correo(input){
+            
+            console.log($(input).val());
+            
+            var regex = /^[a-zA-Z\d\.]+@[a-z]+\.com$/;
+            
+            if (regex.test($(input).val())) {
+                
+                console.log("Si paso la prueba");
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                
+            } else {
+                
+                $('#error' + input.id + '').text('Email inválido').css('color', 'red');
+                $(input).removeClass('border border-success');
+                $(input).addClass('border border-danger');
+                
+            }
+            
+        }
+        
+        function PasswordValidacion(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            
+            console.log(valorCompleto);
+            
+            var regex = /[a-z+A-Z+\d+`~!@#$%^&\*()_+]{8,16}/;
+            
+            if (regex.test(valorCompleto)) {
+                
+                console.log("Si paso la validacion");
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                
+            } else {
+                
+                console.log("No paso la validacion");
+                $('#error' + input.id + '').text('La contraseña debe contener al menos 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial');
+                
+            }
+            
+        }
+        
+    </script>
+    
+</html>
