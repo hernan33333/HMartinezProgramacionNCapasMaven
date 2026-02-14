@@ -4,13 +4,20 @@
  */
 package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 /**
  *
  * @author Alien 7
  */
 public class Rol {
     
+    @NotNull(message = "Debe de elegir un rol")
     private int IdRol;
+    
+    @NotEmpty(message = "Debe de elegir un rol")
     private String Nombre;
     
     public Rol(){

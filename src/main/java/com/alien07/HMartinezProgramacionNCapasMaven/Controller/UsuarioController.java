@@ -12,9 +12,11 @@ import com.alien07.HMartinezProgramacionNCapasMaven.DAO.RolDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.UsuarioDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Result;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -88,21 +90,29 @@ public class UsuarioController {
     }
     
     @PostMapping("formulario")
-    public String Formulario(@ModelAttribute("usuario") Usuario usuario, RedirectAttributes redirectAttributes){
+    public String Formulario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
         
-        Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
         
-        if (result.correct) {
+//        Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
+//        
+//        if (result.correct) {
+//            
+//            redirectAttributes.addFlashAttribute("successMessage", "Se agregó correctamente la información del usuario.");
+//            
+//        } else {
+//        
+//            redirectAttributes.addFlashAttribute("errorMessage", "Hubo un error al intentar registrar al usuario: " + result.errorMessage);
+//        
+//        }
+        
+        if (bindingResult.hasErrors()) {
             
-            redirectAttributes.addFlashAttribute("successMessage", "Se agregó correctamente la información del usuario.");
+            model.addAttribute("usuario", usuario);
+            return "formulario";
             
-        } else {
-        
-            redirectAttributes.addFlashAttribute("errorMessage", "Hubo un error al intentar registrar al usuario: " + result.errorMessage);
-        
         }
-        
-        return "formulario";
+
+        return "redirect:usuario";
     
     }
     

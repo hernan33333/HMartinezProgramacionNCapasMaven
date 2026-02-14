@@ -6,6 +6,11 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Rol;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import java.util.Date;
 import java.util.List;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -17,17 +22,52 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class Usuario {
     
     private int IdUsuario;
+    
+    @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "Sólo debe de escribir letras")
+    @NotEmpty(message = "Escriba un nombre")
+    @Size(min = 3, max = 50, message = "Debe de contener más de 2 letras y menos de 50")
     private String Nombre;
+    
+    @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "Sólo debe de escribir letras")
+    @NotEmpty(message = "Escriba un nombre")
+    @Size(min = 3, max = 50, message = "Debe de contener más de 2 letras y menos de 50")
     private String ApellidoPaterno;
+    
+    
+    @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "Sólo debe de escribir letras")
+    @Size(min = 0, max = 50, message = "Máximo 50 crácteres")
     private String ApellidoMaterno;
+    
     @DateTimeFormat(pattern="yyyy-MM-dd")
+    @FutureOrPresent(message = "Ingrese una fecha válida")
     private Date FechaNacimiento;
+    
+    @Pattern(regexp = "[a-zA-Z\\d]+", message = "Sólo debe de escribir letras o números")
+    @NotEmpty(message = "Escriba un username")
+    @Size(min = 3, max = 50, message = "Debe de contener más de 2 letras y menos de 50")
     private String UserName;
+    
+    @Pattern(regexp = "[a-zA-Z\\d\\.]+@[a-z]+\\.com", message = "El correo es inválido")
+    @NotEmpty(message = "Debe de escribir un email")
+    @Size(max = 254, message = "Email demasiado largo")
     private String Email;
+    
+    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\\.\\*()_])[a-zA-Z\\d`~!@#$%^&\\.\\*()_]", message = "Debe de contener al menos 1 minúscula, 1 mayúscula, 1 número, 1 carácter especial")
+    @NotEmpty(message = "Debe de introducir una contraseña")
+    @Size(min = 8, max = 16, message = "Mínimo 8 carácteres y máximo 16")
     private String Password;
+    
+    @Pattern(regexp = "[F|M|O]", message = "El sexo es inválido")
+    @NotEmpty(message = "Debe de seleccionar un sexo")
     private String Sexo;
+    
+    @Pattern(regexp = "[\\d]{1,10}", message = "El número es inválido")
+    @NotEmpty(message = "Debe de introducir un número")
     private String Telefono;
+    
+    @Valid
     public Rol Rol;
+    @Valid
     public List<Direccion> Direcciones;
     
     public void setIdUsuario(int IdUsuario){

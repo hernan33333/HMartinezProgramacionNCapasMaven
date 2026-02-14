@@ -5,6 +5,11 @@
 package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Municipio;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 /**
  *
@@ -13,8 +18,17 @@ import com.alien07.HMartinezProgramacionNCapasMaven.ML.Municipio;
 public class Colonia {
     
     private int IdColonia;
+    
+    @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "La colonia es incorrecta")
+    @NotEmpty(message = "Debe de elegir una colonia")
+    @Size(min = 2, max = 100, message = "La colonia es incorrecta")
     private String Nombre;
+    
+    @Pattern(regexp = "^[\\d]{5}", message = "El código postal es incorrecto")
+    @NotEmpty(message = "Debe de haber un código postal")
     private String CodigoPostal;
+    
+    @Valid
     public Municipio Municipio;
     
     public Colonia(){

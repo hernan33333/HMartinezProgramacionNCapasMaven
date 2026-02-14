@@ -4,6 +4,10 @@
  */
 package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
+
 /**
  *
  * @author Alien 7
@@ -11,6 +15,9 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 public class Pais {
     
     private int IdPais;
+    
+    @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "El pais es incorrecto")
+    @NotEmpty(message = "Debe elegir un pais")
     private String Nombre;
 
     public Pais(){

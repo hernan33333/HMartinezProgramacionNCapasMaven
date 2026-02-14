@@ -26,45 +26,54 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     <div id="datosUsuario" class="container row">
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioNombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="NombreUsuario" placeholder="Nombre"required th:field="*{Nombre}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
-                            <span id="errorNombreUsuario" style="color: red"></span>
+                            <input type="text" class="form-control" id="NombreUsuario" placeholder="Nombre" th:field="*{Nombre}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                            <span id="errorNombreUsuario"></span>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Nombre')}" th:errors="*{Nombre}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioApellidoPaterno" class="form-label">Apellido paterno</label>
-                            <input type="text" class="form-control" id="ApellidoPaterno" placeholder="Apellido paterno" required th:field="*{ApellidoPaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                            <input type="text" class="form-control" id="ApellidoPaterno" placeholder="Apellido paterno" th:field="*{ApellidoPaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
                             <span id="errorApellidoPaterno"></span>
+                            <span class="text-danger" th:if="${#fields.hasErrors('ApellidoPaterno')}" th:errors="*{ApellidoPaterno}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioApellidoMaterno" class="form-label">Apellido materno</label>
                             <input type="text" class="form-control" id="ApellidoMaterno" placeholder="Apellido materno" th:field="*{ApellidoMaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
                             <span id="errorApellidoMaterno"></span>
+                            <span class="text-danger" th:if="${#fields.hasErrors('ApellidoMaterno')}" th:errors="*{ApellidoMaterno}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioUsername" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="Username" placeholder="Username" required th:field="*{UserName}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)">
+                            <input type="text" class="form-control" id="Username" placeholder="Username" th:field="*{UserName}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)">
                             <span id="errorUsername"></span>
+                            <span class="text-danger" th:if="${#fields.hasErrors('UserName')}" th:errors="*{UserName}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioFechaNacimiento" class="form-label">Fecha de nacimiento</label>
-                            <input type="date" class="form-control" id="formularioFechaNacimiento" required th:field="*{FechaNacimiento}">
+                            <input type="date" class="form-control" id="formularioFechaNacimiento" th:field="*{FechaNacimiento}">
+                            <span class="text-danger" th:if="${#fields.hasErrors('FechaNacimiento')}" th:errors="*{FechaNacimiento}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioEmail" class="form-label">Email</label>
-                            <input type="text" class="form-control" id="Email" placeholder="ejemplo@email.com" required th:field="*{Email}" onblur="Correo(this)">
-                            <span id="errorEmail">text</span>
+                            <input type="text" class="form-control" id="Email" placeholder="ejemplo@email.com" th:field="*{Email}" onkeypress="Correo(this, event)" onblur="CorreoBlur(this)">
+                            <span id="errorEmail"></span>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Email')}" th:errors="*{Email}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioPassword" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="formularioPassword" required th:field="*{Password}" onkeypress="PasswordValidacion(this, event)">
+                            <input type="password" class="form-control" id="Password" th:field="*{Password}" onkeypress="PasswordValidacion(this, event)" onblur="PasswordBlur(this)">
+                            <span id="errorPassword"></span>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Password')}" th:errors="*{Password}">text</span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioNumeroTelefono" class="form-label">Número de teléfono</label>
                             <input type="text" class="form-control" id="NumeroTelefono" placeholder="1234567890" th:field="*{Telefono}" onkeypress="SoloNumeros(this, event)" onblur="SoloNumerosBlur(this)">
                             <span id="errorNumeroTelefono"></span>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Telefono')}" th:errors="*{Telefono}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <div class="form-check">
-                                <input class="form-check-input" type="radio"  name="radioSexo" th:value="F" th:field="*{Sexo}">
+                                <input class="form-check-input" type="radio"  name="radioSexo" checked th:value="F" th:field="*{Sexo}">
                                 <label for="formularioSexo" class="form-check-label">Femenino</label>
                             </div>
                             <div class="form-check">
@@ -75,6 +84,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <input class="form-check-input" type="radio" name="radioSexo" th:value="O" th:field="*{Sexo}">
                                 <label for="formularioSexo" class="form-check-label">Otro</label>
                             </div>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Sexo')}" th:errors="*{Sexo}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioRol" class="form-label">Rol en el sistema</label>
@@ -82,6 +92,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <option value="0">Seleccionar un rol...</option>
                                 <option th:each="rol : ${roles}" th:value="${rol.IdRol}" th:text="${rol.Nombre}"></option>
                             </select>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Rol.Nombre')}" th:errors="*{Rol.Nombre}"></span>
                         </div>
                     </div>
                     
@@ -93,41 +104,48 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <option value=0>Seleccione su pais...</option>
                                 <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
                             </select>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Estado.Pais.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Estado.Pais.Nombre}"></span>
                         </div>
                         <div class="mb-3 col-lg-3 col-md-4">
                             <label for="formularioEstado" class="for-label">Estado</label>
                             <select id="ddlestado" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.IdEstado}">
                                 <option value=0>Seleccione un pais primero</option>
                             </select>
+                            <span class="text-danger"th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Estado.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Estado.Nombre}"></span>
                         </div>
                         <div class="mb-3 col-lg-3 col-md-4">
                             <label for="formularioMunicipio" class="form-label">Municipio</label>
                             <select id="ddlmunicipio" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.IdMunicipio}">
                                 <option value=0>Seleccionar un estado primero</option>
                             </select>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Nombre}"></span>
                         </div>
                         <div class="mb-3 col-lg-3 mol-md-6">
                             <label for="formularioColonia" class="form-label">Colonia:</label>
                             <select id="ddlcolonia" class="form-select" th:field="*{Direcciones[0].Colonia.IdColonia}">
                                 <option value=0>Seleccione un municipio primero</option>
                             </select>
-
+                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Nombre')}" th:errors="*{Direcciones[0].Colonia.Nombre}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioCodigoPostal" class="form-label">Código postal</label>
                             <input id="codigopostal" type="number" class="form-control" placeholder="12345" th:field="*{Direcciones[0].Colonia.CodigoPostal}" disabled>
+                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.CodigoPostal')}" th:errors="*{Direcciones[0].Colonia.CodigoPostal}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioCalle" class="form-label">Calle</label>
                             <input type="text" class="form-control" id="formularioCalle" placeholder="Calle" th:field="*{Direcciones[0].Calle}">
+                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Calle')}" th:errors="*{Direcciones[0].Calle}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
                             <input type="text" class="form-control" placeholder="#10" th:field="*{Direcciones[0].NumeroInterior}">
+                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].NumeroInterior')}" th:errors="*{Direcciones[0].NumeroInterior}"></span>
                         </div>
                         <div class="mb-3 col-lg-4 col-md-6">
                             <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
                             <input type="text" class="form-control" placeholder="#123" th:field="*{Direcciones[0].NumeroExterior}">
+                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].NumeroExterior')}" th:errors="*{Direcciones[0].NumeroExterior}"></span>
                         </div>
                         <div class="mb-3 row">
                             <button type="button" class="btn btn-danger col-lg-4">Cancelar</button>
@@ -313,18 +331,29 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             
             var regex = /^[a-zA-Z áéíóú]+$/;
             
-            if (regex.test(valorCompleto)) {
-                
-                console.log("Paso la regex");
-                $('#error' + input.id + '').text('');
-                $(input).removeClass('border border-danger');
-                
-            } else {
+            if (valorCompleto.length > 50) {
                 
                 console.log("No paso la regex");
                 event.preventDefault();
                 $(input).addClass('border border-danger');
-                $('#error' + input.id + '').text('Solo letras').css('color', 'red');
+                $('#error' + input.id + '').text('Máximo 50 carácteres').css('color', 'red');
+                
+            } else {
+                
+                if (regex.test(valorCompleto)) {
+                
+                    console.log("Paso la regex");
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+
+                } else {
+
+                    console.log("No paso la regex");
+                    event.preventDefault();
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Solo letras').css('color', 'red');
+
+                }
                 
             }
             
@@ -332,7 +361,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         
         function SoloLetrasBlur(input){
             
-            var regex = /^[a-zA-Z áéíóú]+$/;
+            var regex = /^[a-zA-Z áéíóú]{1,50}$/;
             
             if (regex.test($(input).val())) {
     
@@ -349,20 +378,30 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             var valorCompleto = $(input).val() + event.key;
             console.log(valorCompleto);
             
-            var regex = /^[\d]{1,10}$/;
+            var regex = /^[\d]+$/;
             
-            if (regex.test(valorCompleto)) {
+            if (valorCompleto.length > 10) {
                 
-                console.log("Si paso la regex");
-                $('#error' + input.id + '').text('');
-                $(input).removeClass('border border-danger');
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Máximo 10 dígitos').css('color', 'red');
     
             } else {
                 
-                console.log("No paso la regex");
-                event.preventDefault();
-                $(input).addClass('border border-danger');
-                $('#error' + input.id + '').text('Solo numeros').css('color', 'red');
+                if (regex.test(valorCompleto)) {
+                
+                    console.log("Si paso la regex");
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+
+                } else {
+
+                    console.log("No paso la regex");
+                    event.preventDefault();
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Solo numeros').css('color', 'red');
+
+                }
                 
             }
             
@@ -386,7 +425,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             
             var valorCompleto = $(input).val() + event.key;
             
-            var regex = /^[a-zA-Z\d]{1,20}$/;
+            var regex = /^[a-zA-Z\d]+$/;
             
             if (valorCompleto.length > 20) {
                 
@@ -427,10 +466,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             
         }
         
-        function Correo(input){
+        function Correo(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            
+            if (valorCompleto.length > 254) {
+                
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Demasiados carácteres').css('color', 'red');
+                
+            }
+            
+            
+        }
+        
+        function CorreoBlur(input){
             
             console.log($(input).val());
-            
             var regex = /^[a-zA-Z\d\.]+@[a-z]+\.com$/;
             
             if (regex.test($(input).val())) {
@@ -456,20 +509,55 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             
             console.log(valorCompleto);
             
-            var regex = /[a-z+A-Z+\d+`~!@#$%^&\*()_+]{8,16}/;
+            var regex = /^[a-zA-Z\d`~!@#$%^&\.\*()-_]+$/;
             
-            if (regex.test(valorCompleto)) {
+            if (valorCompleto.length < 8 || valorCompleto.length > 16) {
                 
-                console.log("Si paso la validacion");
-                $('#error' + input.id + '').text('');
+               $(input).addClass('border border-danger');
+               $('#error' + input.id + '').text('La contraseña debe de ser de 8 - 16 carácteres').css('color', 'red');
+    
+            } else {
+                
+                if (regex.test(valorCompleto)) {
+                
+                    console.log("Si paso la validacion");
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+
+                } else {
+
+                    console.log("No paso la validacion");
+                    event.preventDefault();
+                    $('#error' + input.id + '').text('La contraseña debe contener al menos 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial');
+
+                }
+                
+            }
+        }
+        
+        function PasswordBlur(input){
+            
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\.\*()_])[a-zA-Z\d`~!@#$%^&\.\*()_]{8,16}$/;
+            
+            if (regex.test($(input).val())) {
+                
                 $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                $('#error' + input.id + '').text('');
                 
             } else {
                 
-                console.log("No paso la validacion");
-                $('#error' + input.id + '').text('La contraseña debe contener al menos 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial');
+                $(input).removeClass('border border-success');
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Contraseña inválida').css('color', 'red');
                 
             }
+            
+        }
+        
+        function FechaBlur(input){
+            
+            
             
         }
         
