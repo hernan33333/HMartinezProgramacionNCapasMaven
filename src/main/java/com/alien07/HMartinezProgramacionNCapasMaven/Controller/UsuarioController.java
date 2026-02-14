@@ -108,6 +108,31 @@ public class UsuarioController {
         if (bindingResult.hasErrors()) {
             
             model.addAttribute("usuario", usuario);
+            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+            
+            int IdPais = usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais();
+            
+            if (IdPais > 0) {
+                
+                model.addAttribute("estados", estadoDAOImplementation.GetByPais(IdPais));
+                
+                int IdEstado = usuario.Direcciones.get(0).Colonia.Municipio.Estado.getIdEstado();
+                
+                if (IdEstado > 0) {
+                    
+                    model.addAttribute("municipios", municipioDAOImplementation.GetByEstado(IdEstado));
+                    
+                    int IdMunicimipio = usuario.Direcciones.get(0).Colonia.Municipio.getIdMunicipio();
+                    
+                    if (IdMunicimipio > 0) {
+                        
+                        model.addAttribute("colonias", coloniaDAOImplementation.GetByMunicipio(IdMunicimipio));
+                        
+                    }
+                    
+                }
+                
+            }
             return "formulario";
             
         }
