@@ -6,9 +6,7 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Pais;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 
 /**
  *
@@ -16,9 +14,9 @@ import jakarta.validation.constraints.Pattern;
  */
 public class Estado {
     
+    @NotNull(message = "Debe de seleccionar un estado")
     private int IdEstado;
-    @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "El estado es incorrecto")
-    @NotEmpty(message = "Debe de seleccionar un estado")
+    
     private String Nombre;
     
     @Valid

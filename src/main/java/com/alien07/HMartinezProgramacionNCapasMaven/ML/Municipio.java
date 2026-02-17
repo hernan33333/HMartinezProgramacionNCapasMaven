@@ -6,9 +6,7 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Estado;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 
 /**
  *
@@ -16,10 +14,8 @@ import jakarta.validation.constraints.Pattern;
  */
 public class Municipio {
     
-    private int IdMunicipio;
+    @NotNull(message = "Debe de elegir un municipio")private int IdMunicipio;
     
-    @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "El municipio es incorrecto")
-    @NotEmpty(message = "Debe de elegir un municipio")
     private String Nombre;
     
     @Valid

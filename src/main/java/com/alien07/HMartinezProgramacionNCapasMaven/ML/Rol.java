@@ -17,7 +17,6 @@ public class Rol {
     @NotNull(message = "Debe de elegir un rol")
     private int IdRol;
     
-    @NotEmpty(message = "Debe de elegir un rol")
     private String Nombre;
     
     public Rol(){

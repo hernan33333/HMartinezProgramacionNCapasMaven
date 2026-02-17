@@ -13,6 +13,8 @@ import com.alien07.HMartinezProgramacionNCapasMaven.DAO.UsuarioDAOImplementation
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Result;
 import jakarta.validation.Valid;
+import java.io.IOException;
+import java.util.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,7 +24,9 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
@@ -90,7 +94,7 @@ public class UsuarioController {
     }
     
     @PostMapping("formulario")
-    public String Formulario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
+    public String Formulario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, @RequestParam("imagenFile") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException{
         
         
 //        Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
@@ -109,35 +113,55 @@ public class UsuarioController {
             
             model.addAttribute("usuario", usuario);
             model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+            model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
             
             int IdPais = usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais();
             
             if (IdPais > 0) {
                 
-                model.addAttribute("estados", estadoDAOImplementation.GetByPais(IdPais));
+                model.addAttribute("estados", estadoDAOImplementation.GetByPais(IdPais).objects);
                 
                 int IdEstado = usuario.Direcciones.get(0).Colonia.Municipio.Estado.getIdEstado();
                 
                 if (IdEstado > 0) {
                     
-                    model.addAttribute("municipios", municipioDAOImplementation.GetByEstado(IdEstado));
+                    model.addAttribute("municipios", municipioDAOImplementation.GetByEstado(IdEstado).objects);
                     
                     int IdMunicimipio = usuario.Direcciones.get(0).Colonia.Municipio.getIdMunicipio();
                     
                     if (IdMunicimipio > 0) {
                         
-                        model.addAttribute("colonias", coloniaDAOImplementation.GetByMunicipio(IdMunicimipio));
+                        model.addAttribute("colonias", coloniaDAOImplementation.GetByMunicipio(IdMunicimipio).objects);
                         
                     }
                     
                 }
                 
             }
+            
             return "formulario";
             
         }
+        
+        if (imagen != null) {
+                
+            String nombreImagen = imagen.getOriginalFilename();
+            String[] cadena = nombreImagen.split("\\.");
 
-        return "redirect:usuario";
+            if (cadena[1].equals("jpg") || cadena[1].equals("png") || cadena[1].equals("jpeg")) {
+
+                String imagenConvertida = Base64.getEncoder().encodeToString(imagen.getBytes());
+                usuario.setImagen(imagenConvertida);
+
+            } else {
+
+                model.addAttribute("imagenFile", imagen);
+
+            }
+
+        }
+
+        return "redirect:/usuario";
     
     }
     

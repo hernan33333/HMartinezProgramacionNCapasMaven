@@ -23,11 +23,11 @@ public class Direccion {
     @Size(min = 1, max = 100, message = "Más de 2 carácteres y menos de 100")
     private String Calle;
     
-    @Pattern(regexp = "[a-zA-Z\\d]", message = "Sólo se aceptan letras y números")
+    @Pattern(regexp = "[a-zA-Z\\d]+", message = "Sólo se aceptan letras y números")
     @Size(min = 1, max = 20, message = "Más de 1 carácter y menos de 20")
     private String NumeroInterior;
     
-    @Pattern(regexp = "[a-zA-Z\\d]", message = "Sólo se aceptan letras y números")
+    @Pattern(regexp = "[a-zA-Z\\d]+", message = "Sólo se aceptan letras y números")
     @NotEmpty(message = "Debe introducir un valor")
     @Size(min = 1, max = 20, message = "Más de 1 carácter y menos de 20")
     private String NumeroExterior;

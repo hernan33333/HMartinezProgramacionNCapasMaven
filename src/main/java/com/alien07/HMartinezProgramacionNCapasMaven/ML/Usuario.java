@@ -8,6 +8,7 @@ import com.alien07.HMartinezProgramacionNCapasMaven.ML.Rol;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -33,13 +34,12 @@ public class Usuario {
     @Size(min = 3, max = 50, message = "Debe de contener más de 2 letras y menos de 50")
     private String ApellidoPaterno;
     
-    
     @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "Sólo debe de escribir letras")
     @Size(min = 0, max = 50, message = "Máximo 50 crácteres")
     private String ApellidoMaterno;
     
     @DateTimeFormat(pattern="yyyy-MM-dd")
-    @FutureOrPresent(message = "Ingrese una fecha válida")
+    @Past(message = "Ingrese una fecha válida")
     private Date FechaNacimiento;
     
     @Pattern(regexp = "[a-zA-Z\\d]+", message = "Sólo debe de escribir letras o números")
@@ -52,7 +52,7 @@ public class Usuario {
     @Size(max = 254, message = "Email demasiado largo")
     private String Email;
     
-    @Pattern(regexp = "(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\\.\\*()_])[a-zA-Z\\d`~!@#$%^&\\.\\*()_]", message = "Debe de contener al menos 1 minúscula, 1 mayúscula, 1 número, 1 carácter especial")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\\.\\*()_])[a-zA-Z\\d`~!@#$%^&\\.\\*()_]+$", message = "Debe de contener al menos 1 minúscula, 1 mayúscula, 1 número, 1 carácter especial")
     @NotEmpty(message = "Debe de introducir una contraseña")
     @Size(min = 8, max = 16, message = "Mínimo 8 carácteres y máximo 16")
     private String Password;
@@ -64,6 +64,8 @@ public class Usuario {
     @Pattern(regexp = "[\\d]{1,10}", message = "El número es inválido")
     @NotEmpty(message = "Debe de introducir un número")
     private String Telefono;
+    
+    private String Imagen;
     
     @Valid
     public Rol Rol;
@@ -165,6 +167,14 @@ public class Usuario {
     
     public void setDirecciones(List<Direccion> Direcciones){
         this.Direcciones = Direcciones;
+    }
+    
+    public String getImagen(){
+        return Imagen;
+    }
+    
+    public void setImagen(String Imagen){
+        this.Imagen = Imagen;
     }
     
 }
