@@ -56,7 +56,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <div class="mb-3 col-lg-4 col-md-6">
                                 <label for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
                                 <input type="date" class="form-control" id="FechaNacimiento" th:field="*{FechaNacimiento}" onblur="FechaBlur(this)">
-                                <span class="errorFechaNacimiento"></span>
+                                <span id="errorFechaNacimiento"></span>
                                 <span class="text-danger" th:if="${#fields.hasErrors('FechaNacimiento')}" th:errors="*{FechaNacimiento}"></span>
                             </div>
                             <div class="mb-3 col-lg-4 col-md-6">
@@ -586,22 +586,34 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         function FechaBlur(input){
             
             var fecha = new Date($(input).val());
+            var fechaHoy = new Date(Date.now());
             
-            var anio = fecha.getFullYear();
+            var fechaResultante = fechaHoy.getTime() - fecha.getTime();
+            
+            fechaResultante = fechaResultante /( 1000 * 60 * 60 * 24);
+            
             var mes = fecha.getMonth() + 1;
             var dia = fecha.getUTCDate();
             
-            if (mes >= 1 && mes  <= 12) {
-    
-`           }
-
-            if (dia >= 1 && dia <= 31) {
-    
-            }
+            if (mes < 1 || mes  > 12 || dia < 1 || dia > 31) {
             
-            console.log(anio);
-            console.log(mes);
-            console.log(dia);
+                $(input).removeClass('border border-success');
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Ingrese una fecha válida').css('color', 'red');
+                
+            } else if (fechaResultante < 6570) {
+                
+                $(input).removeClass('border border-success');
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('No es mayor de edad').css('color', 'red');
+    
+            } else{
+                
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                $('#error' + input.id + '').text('');
+                
+            }
             
         }
         
