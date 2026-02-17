@@ -21,137 +21,148 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     Añadir un nuevo usuario
                 </h3>
                 
-                <form method="post" th:object="${usuario}" th:action="@{/usuario/formulario}" id="formularioAgregarUsuario" class="row">
-                   
-                    <div id="datosUsuario" class="container row">
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioNombre" class="form-label">Nombre</label>
-                            <input type="text" class="form-control" id="NombreUsuario" placeholder="Nombre" th:field="*{Nombre}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
-                            <span id="errorNombreUsuario"></span>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Nombre')}" th:errors="*{Nombre}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioApellidoPaterno" class="form-label">Apellido paterno</label>
-                            <input type="text" class="form-control" id="ApellidoPaterno" placeholder="Apellido paterno" th:field="*{ApellidoPaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
-                            <span id="errorApellidoPaterno"></span>
-                            <span class="text-danger" th:if="${#fields.hasErrors('ApellidoPaterno')}" th:errors="*{ApellidoPaterno}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioApellidoMaterno" class="form-label">Apellido materno</label>
-                            <input type="text" class="form-control" id="ApellidoMaterno" placeholder="Apellido materno" th:field="*{ApellidoMaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
-                            <span id="errorApellidoMaterno"></span>
-                            <span class="text-danger" th:if="${#fields.hasErrors('ApellidoMaterno')}" th:errors="*{ApellidoMaterno}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioUsername" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="Username" placeholder="Username" th:field="*{UserName}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)">
-                            <span id="errorUsername"></span>
-                            <span class="text-danger" th:if="${#fields.hasErrors('UserName')}" th:errors="*{UserName}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioFechaNacimiento" class="form-label">Fecha de nacimiento</label>
-                            <input type="date" class="form-control" id="formularioFechaNacimiento" th:field="*{FechaNacimiento}">
-                            <span class="text-danger" th:if="${#fields.hasErrors('FechaNacimiento')}" th:errors="*{FechaNacimiento}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioEmail" class="form-label">Email</label>
-                            <input type="text" class="form-control" id="Email" placeholder="ejemplo@email.com" th:field="*{Email}" onkeypress="Correo(this, event)" onblur="CorreoBlur(this)">
-                            <span id="errorEmail"></span>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Email')}" th:errors="*{Email}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioPassword" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="Password" th:field="*{Password}" onkeypress="PasswordValidacion(this, event)" onblur="PasswordBlur(this)">
-                            <span id="errorPassword"></span>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Password')}" th:errors="*{Password}">text</span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioNumeroTelefono" class="form-label">Número de teléfono</label>
-                            <input type="text" class="form-control" id="NumeroTelefono" placeholder="1234567890" th:field="*{Telefono}" onkeypress="SoloNumeros(this, event)" onblur="SoloNumerosBlur(this)">
-                            <span id="errorNumeroTelefono"></span>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Telefono')}" th:errors="*{Telefono}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio"  name="radioSexo" checked th:value="F" th:field="*{Sexo}">
-                                <label for="formularioSexo" class="form-check-label">Femenino</label>
+                <form method="post" th:object="${usuario}" th:action="@{/usuario/formulario}" enctype="multipart/form-data">
+                    <div class="row">
+                        <div id="datosUsuario" class="container row">
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="Nombre" class="form-label">Nombre</label>
+                                <input type="text" class="form-control" id="NombreUsuario" placeholder="Nombre" th:field="*{Nombre}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                                <span id="errorNombreUsuario"></span>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Nombre')}" th:errors="*{Nombre}"></span>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="radioSexo" th:value="M" th:field="*{Sexo}">
-                                <label for="formularioSexo" class="form-check-label">Masculino</label>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="imagenFile" class="form-label">Imagen del usuario</label>
+                                <input type="file" class="form-control" id="imagenFile" name="imagenFile" accept="image/*">
+                                <img id="imagenMuestra" style="max-width: 150px; max-height: auto" class="mx-auto"/>
                             </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="radioSexo" th:value="O" th:field="*{Sexo}">
-                                <label for="formularioSexo" class="form-check-label">Otro</label>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioApellidoPaterno" class="form-label">Apellido paterno</label>
+                                <input type="text" class="form-control" id="ApellidoPaterno" placeholder="Apellido paterno" th:field="*{ApellidoPaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                                <span id="errorApellidoPaterno"></span>
+                                <span class="text-danger" th:if="${#fields.hasErrors('ApellidoPaterno')}" th:errors="*{ApellidoPaterno}"></span>
                             </div>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Sexo')}" th:errors="*{Sexo}"></span>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioApellidoMaterno" class="form-label">Apellido materno</label>
+                                <input type="text" class="form-control" id="ApellidoMaterno" placeholder="Apellido materno" th:field="*{ApellidoMaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                                <span id="errorApellidoMaterno"></span>
+                                <span class="text-danger" th:if="${#fields.hasErrors('ApellidoMaterno')}" th:errors="*{ApellidoMaterno}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioUsername" class="form-label">Username</label>
+                                <input type="text" class="form-control" id="Username" placeholder="Username" th:field="*{UserName}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)">
+                                <span id="errorUsername"></span>
+                                <span class="text-danger" th:if="${#fields.hasErrors('UserName')}" th:errors="*{UserName}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
+                                <input type="date" class="form-control" id="FechaNacimiento" th:field="*{FechaNacimiento}" onblur="FechaBlur(this)">
+                                <span class="errorFechaNacimiento"></span>
+                                <span class="text-danger" th:if="${#fields.hasErrors('FechaNacimiento')}" th:errors="*{FechaNacimiento}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioEmail" class="form-label">Email</label>
+                                <input type="text" class="form-control" id="Email" placeholder="ejemplo@email.com" th:field="*{Email}" onkeypress="Correo(this, event)" onblur="CorreoBlur(this)">
+                                <span id="errorEmail"></span>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Email')}" th:errors="*{Email}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioPassword" class="form-label">Contraseña</label>
+                                <input type="password" class="form-control" id="Password" th:field="*{Password}" onkeypress="PasswordValidacion(this, event)" onblur="PasswordBlur(this)">
+                                <span id="errorPassword"></span>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Password')}" th:errors="*{Password}">text</span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioNumeroTelefono" class="form-label">Número de teléfono</label>
+                                <input type="text" class="form-control" id="NumeroTelefono" placeholder="1234567890" th:field="*{Telefono}" onkeypress="SoloNumeros(this, event)" onblur="SoloNumerosBlur(this)">
+                                <span id="errorNumeroTelefono"></span>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Telefono')}" th:errors="*{Telefono}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio"  name="radioSexo" checked th:value="F" th:field="*{Sexo}">
+                                    <label for="formularioSexo" class="form-check-label">Femenino</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="radioSexo" th:value="M" th:field="*{Sexo}">
+                                    <label for="formularioSexo" class="form-check-label">Masculino</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="radioSexo" th:value="O" th:field="*{Sexo}">
+                                    <label for="formularioSexo" class="form-check-label">Otro</label>
+                                </div>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Sexo')}" th:errors="*{Sexo}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioRol" class="form-label">Rol en el sistema</label>
+                                <select id="formularioRol" class="form-select" th:field="*{Rol.IdRol}">
+                                    <option value="0">Seleccionar un rol...</option>
+                                    <option th:each="rol : ${roles}" th:value="${rol.IdRol}" th:text="${rol.Nombre}"></option>
+                                </select>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Rol.Nombre')}" th:errors="*{Rol.Nombre}"></span>
+                            </div>
                         </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioRol" class="form-label">Rol en el sistema</label>
-                            <select id="formularioRol" class="form-select" th:field="*{Rol.IdRol}">
-                                <option value="0">Seleccionar un rol...</option>
-                                <option th:each="rol : ${roles}" th:value="${rol.IdRol}" th:text="${rol.Nombre}"></option>
-                            </select>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Rol.Nombre')}" th:errors="*{Rol.Nombre}"></span>
+
+                        <div id="datosDireccion" class="container row">
+
+                            <div class="mb-3 col-lg-3 col-md-4">
+                                <label for="formularioPais" class="form-label">Pais</label>
+                                <select id="ddlpais" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.Pais.IdPais}">
+                                    <option value=0>Seleccione su pais...</option>
+                                    <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
+                                </select>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Estado.Pais.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Estado.Pais.Nombre}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-4">
+                                <label for="formularioEstado" class="for-label">Estado</label>
+                                <select id="ddlestado" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.IdEstado}">
+                                    <option value=0>Seleccione un pais primero</option>
+                                    <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}"</option>
+                                </select>
+                                <span class="text-danger"th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Estado.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Estado.Nombre}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-3 col-md-4">
+                                <label for="formularioMunicipio" class="form-label">Municipio</label>
+                                <select id="ddlmunicipio" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.IdMunicipio}">
+                                    <option value=0>Seleccionar un estado primero</option>
+                                    <option th:each="municipio: ${municipios}" th:value="${municipio.IdMunicipio}" th:text="${municipio.Nombre}"></option>
+                                </select>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Nombre}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-3 mol-md-6">
+                                <label for="formularioColonia" class="form-label">Colonia:</label>
+                                <select id="ddlcolonia" class="form-select" th:field="*{Direcciones[0].Colonia.IdColonia}">
+                                    <option value=0>Seleccione un municipio primero</option>
+                                    <option th:each="colonia : ${colonias}" th:value="${colonia.IdColonia}" th:text="${colonia.nombre}"></option>
+                                </select>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Nombre')}" th:errors="*{Direcciones[0].Colonia.Nombre}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioCodigoPostal" class="form-label">Código postal</label>
+                                <input id="codigopostal" type="number" class="form-control" placeholder="12345" th:field="*{Direcciones[0].Colonia.CodigoPostal}" disabled>
+                                <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.CodigoPostal')}" th:errors="*{Direcciones[0].Colonia.CodigoPostal}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioCalle" class="form-label">Calle</label>
+                                <input type="text" class="form-control" id="formularioCalle" placeholder="Calle" th:field="*{Direcciones[0].Calle}">
+                                <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Calle')}" th:errors="*{Direcciones[0].Calle}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
+                                <input type="text" class="form-control" placeholder="#10" th:field="*{Direcciones[0].NumeroInterior}">
+                                <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].NumeroInterior')}" th:errors="*{Direcciones[0].NumeroInterior}"></span>
+                            </div>
+                            <div class="mb-3 col-lg-4 col-md-6">
+                                <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
+                                <input type="text" class="form-control" placeholder="#123" th:field="*{Direcciones[0].NumeroExterior}">
+                                <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].NumeroExterior')}" th:errors="*{Direcciones[0].NumeroExterior}"></span>
+                            </div>
+                            <div class="mb-3 row">
+                                <button type="button" class="btn btn-danger col-lg-4">Cancelar</button>
+                                <button type="reset" class="btn btn-secondary col-lg-4">Borrar</button>
+                                <button type="submit" class="btn btn-success col-lg-4">Aceptar</button>
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div id="datosDireccion" class="container row">
                         
-                        <div class="mb-3 col-lg-3 col-md-4">
-                            <label for="formularioPais" class="form-label">Pais</label>
-                            <select id="ddlpais" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.Pais.IdPais}">
-                                <option value=0>Seleccione su pais...</option>
-                                <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
-                            </select>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Estado.Pais.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Estado.Pais.Nombre}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-3 col-md-4">
-                            <label for="formularioEstado" class="for-label">Estado</label>
-                            <select id="ddlestado" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.IdEstado}">
-                                <option value=0>Seleccione un pais primero</option>
-                            </select>
-                            <span class="text-danger"th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Estado.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Estado.Nombre}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-3 col-md-4">
-                            <label for="formularioMunicipio" class="form-label">Municipio</label>
-                            <select id="ddlmunicipio" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.IdMunicipio}">
-                                <option value=0>Seleccionar un estado primero</option>
-                            </select>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Nombre}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-3 mol-md-6">
-                            <label for="formularioColonia" class="form-label">Colonia:</label>
-                            <select id="ddlcolonia" class="form-select" th:field="*{Direcciones[0].Colonia.IdColonia}">
-                                <option value=0>Seleccione un municipio primero</option>
-                            </select>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Nombre')}" th:errors="*{Direcciones[0].Colonia.Nombre}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioCodigoPostal" class="form-label">Código postal</label>
-                            <input id="codigopostal" type="number" class="form-control" placeholder="12345" th:field="*{Direcciones[0].Colonia.CodigoPostal}" disabled>
-                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.CodigoPostal')}" th:errors="*{Direcciones[0].Colonia.CodigoPostal}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioCalle" class="form-label">Calle</label>
-                            <input type="text" class="form-control" id="formularioCalle" placeholder="Calle" th:field="*{Direcciones[0].Calle}">
-                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Calle')}" th:errors="*{Direcciones[0].Calle}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
-                            <input type="text" class="form-control" placeholder="#10" th:field="*{Direcciones[0].NumeroInterior}">
-                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].NumeroInterior')}" th:errors="*{Direcciones[0].NumeroInterior}"></span>
-                        </div>
-                        <div class="mb-3 col-lg-4 col-md-6">
-                            <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
-                            <input type="text" class="form-control" placeholder="#123" th:field="*{Direcciones[0].NumeroExterior}">
-                            <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].NumeroExterior')}" th:errors="*{Direcciones[0].NumeroExterior}"></span>
-                        </div>
-                        <div class="mb-3 row">
-                            <button type="button" class="btn btn-danger col-lg-4">Cancelar</button>
-                            <button type="reset" class="btn btn-secondary col-lg-4">Borrar</button>
-                            <button type="submit" class="btn btn-success col-lg-4">Aceptar</button>
-                        </div>
                     </div>
                 </form>
             </div>
@@ -161,6 +172,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <script>
         
         $(document).ready(function(){
+            
+            $("#imagenFile").change(function(){
+            
+                if (this.files && this.files[0]) {
+                
+                    var reader = new FileReader();
+                    
+                    reader.onload = function(e){
+                        
+                        $("#imagenMuestra").attr('src', e.target.result);
+                        
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                
+                }
+        
+            });
             
             $("#ddlpais").change(function(){
                 
@@ -188,7 +217,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         error: function(jqXHR, textStatus, errorThrown){
                             
                             alert("No se pudo procesar la obtención de los ESTADOS");
-                            
                         }
                         
                     });
@@ -557,7 +585,23 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         
         function FechaBlur(input){
             
+            var fecha = new Date($(input).val());
             
+            var anio = fecha.getFullYear();
+            var mes = fecha.getMonth() + 1;
+            var dia = fecha.getUTCDate();
+            
+            if (mes >= 1 && mes  <= 12) {
+    
+`           }
+
+            if (dia >= 1 && dia <= 31) {
+    
+            }
+            
+            console.log(anio);
+            console.log(mes);
+            console.log(dia);
             
         }
         
