@@ -74,7 +74,7 @@ public class UsuarioController {
         Result resultRol = rolDAOImplementation.GetAll();
         model.addAttribute("roles", resultRol.objects);
         
-        return "Formulario";
+        return "UsuarioDetail";
     
     }
     

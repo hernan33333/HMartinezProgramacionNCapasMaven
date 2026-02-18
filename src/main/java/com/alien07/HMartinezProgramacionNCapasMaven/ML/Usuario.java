@@ -6,8 +6,7 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Rol;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.Valid;;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;

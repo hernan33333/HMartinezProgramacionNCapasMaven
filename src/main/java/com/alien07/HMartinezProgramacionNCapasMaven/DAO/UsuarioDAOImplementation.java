@@ -61,6 +61,7 @@ public class UsuarioDAOImplementation implements IUsuario{
                     usuario.setSexo(resultset.getString("Sexo"));
                     usuario.setTelefono(resultset.getString("Telefono"));
                     usuario.Rol.setNombre(resultset.getString("NombreRol"));
+                    usuario.setImagen(resultset.getString("Imagen"));
 
                     int IdDireccion = resultset.getInt("IdDireccion");
 
@@ -119,6 +120,7 @@ public class UsuarioDAOImplementation implements IUsuario{
                     usuario.setTelefono(resultset.getString("Telefono"));
                     usuario.Rol.setIdRol(resultset.getInt("IdRol"));
                     usuario.Rol.setNombre(resultset.getString("NombreRol"));
+                    usuario.setImagen(resultset.getString("Imagen"));
 
                     int idDireccion = resultset.getInt("IdDireccion");
 
@@ -131,11 +133,10 @@ public class UsuarioDAOImplementation implements IUsuario{
                             usuario.Direcciones.add(agregarDireccion(resultset));
 
                         } while (resultset.next());
-
-                        result.correct = true;
-                        result.object = usuario;
-
                     }
+                    
+                    result.correct = true;
+                    result.object = usuario;
 
                 } else {
 
