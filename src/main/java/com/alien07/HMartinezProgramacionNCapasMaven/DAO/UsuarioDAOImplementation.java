@@ -196,7 +196,7 @@ public class UsuarioDAOImplementation implements IUsuario{
         
         Result result = new Result();
         
-        jdbcTemplate.execute("CALL UsuarioDireccionAddSP(?,?,?,?,?,?,?,?,?,?,?,?,?,?)", (CallableStatementCallback<Boolean>) callableStatement -> {
+        jdbcTemplate.execute("{CALL UsuarioDireccionAddSP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
             
             callableStatement.setString(1, usuario.getNombre());
             callableStatement.setString(2, usuario.getApellidoPaterno());
@@ -212,16 +212,17 @@ public class UsuarioDAOImplementation implements IUsuario{
             callableStatement.setString(12, usuario.Direcciones.get(0).getNumeroExterior());
             callableStatement.setString(13, usuario.Direcciones.get(0).getNumeroInterior());
             callableStatement.setInt(14, usuario.Direcciones.get(0).Colonia.getIdColonia());
+            callableStatement.setString(15, usuario.getImagen());
             
             int resultadoInsercion = callableStatement.executeUpdate();
-            if (resultadoInsercion == 0) {
+            if (resultadoInsercion == 1) {
             
                 result.correct = true;
                 
             } else {
             
                 result.correct = false;
-                result.errorMessage = "La ejecucuón devolvió el código: " + resultadoInsercion;
+                result.errorMessage = "La ejecución devolvió el código: " + resultadoInsercion;
                 
             }
             

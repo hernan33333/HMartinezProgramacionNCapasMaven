@@ -14,11 +14,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body style="background-color: #E3E3FF">
-        <div class="container" th:object="${usuario}">
-            <div class="main-body">
+        <div class="container">
+            <div class="main-body" th:object="${usuario}">
                 <div class="row gutters-sm mt-3">
                     <div class="col-lg-5">
-                        <div class="card" style="background-color: #FFFFE3">
+                        <div class="card">
                             <div class="card-body d-flex justify-content-center align-items-center row">
                                 <div id="divImagen" class="border border-4 border-success rounded position-relative col-7" style="background-color: white">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16" th:if="${usuario.Imagen == null}">
@@ -32,7 +32,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 <span class="fs-4 text-center fw-lighter col-5" th:text="${usuario.UserName}"></span>
                             </div>
                         </div>
-                        <div class="card mt-3" style="background-color: #FFFFE3">
+                        <div class="card mt-3">
                             <div clas="card-body row">
                                 <div class="ms-2 col-lg-12">
                                     <span id="Nombre" class="class fs-4 fw-semibold" th:text="|${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno ?: ''}|"></span>
@@ -52,7 +52,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                 </div>
                             </div>
                         </div>
-                        <div class="card mt-3" style="background-color: #FFFFE3">
+                        <div class="card mt-3">
                             <div class="card-body row">
                                 <div class="text-center">
                                     <span class="fs-3 text-center mb-3 fw-bold">Datos de contacto</span>
@@ -69,7 +69,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         </div>
                     </div>
                     <div class="col-lg-7">
-                        <div class="card" style="background-color: #FFFFE3">
+                        <div class="card">
                             <div class="card-body">
                                 <table class="table table-hover">
                                     <colgroup>
@@ -89,12 +89,12 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                     </thead>
                                     <tbody style="background-color: #FFFFE3">
                                         <tr th:each="direccion, numero : ${usuario.Direcciones}">
-                                            <th scope="row" th:text="${numero.index + 1}"></th>
+                                            <th id="numeroDireccion" scope="row" th:text="${numero.index + 1}"></th>
                                             <td>
                                                 <span class="class" th:text="|${direccion.Calle} ${direccion.NumeroExterior} ${direccion.NumeroInterior}, ${direccion.Colonia.Nombre} ${direccion.Colonia.CodigoPostal}, ${direccion.Colonia.Municipio.Nombre}, ${direccion.Colonia.Municipio.Estado.Nombre}, ${direccion.Colonia.Municipio.Estado.Pais.Nombre}|"></span>
                                             </td>
                                             <td>
-                                                <button class="btn btn-sm btn-warning">
+                                                <button id="botonEditarDireccion" class="btn btn-sm btn-warning" th:value="${numero.index}" onclick="formularioDireccion(this)">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
                                                 <button class="btn btn-sm btn-danger">
@@ -105,7 +105,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                     </tbody>
                                 </table>
                                 <div>
-                                    <button class="btn btn-success">
+                                    <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#modalDireccion">
                                         <i class="bi bi-plus-square-fill"></i>
                                         Agregar
                                     </button>
@@ -120,65 +120,65 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <div id="modalUsuario" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
-                    <div class="modal-header">
-                        <h1 class="modal-title fs-5">Actualizar información</h1>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <form method="post" th:object="${usuario}" th:action="@{/usuario/formulario}">
+                    <form method="post" th:object="${usuario}" th:action="@{/usuario/actualizarusuario}">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Actualizar información</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
                                 <div class="row">
                                    <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="Nombre" class="form-label">Nombre</label>
-                                        <input type="text" class="form-control" id="NombreUsuario" placeholder="Nombre" th:field="*{Nombre}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                                        <input type="text" class="form-control" id="NombreUsuario" placeholder="Nombre" th:field="*{Nombre}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)" required>
                                         <span id="errorNombreUsuario"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('Nombre')}" th:errors="*{Nombre}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="formularioApellidoPaterno" class="form-label">Apellido paterno</label>
-                                        <input type="text" class="form-control" id="ApellidoPaterno" placeholder="Apellido paterno" th:field="*{ApellidoPaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                                        <input type="text" class="form-control" id="ApellidoPaterno" placeholder="Apellido paterno" th:field="*{ApellidoPaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)" required>
                                         <span id="errorApellidoPaterno"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('ApellidoPaterno')}" th:errors="*{ApellidoPaterno}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="formularioApellidoMaterno" class="form-label">Apellido materno</label>
-                                        <input type="text" class="form-control" id="ApellidoMaterno" placeholder="Apellido materno" th:field="*{ApellidoMaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)">
+                                        <input type="text" class="form-control" id="ApellidoMaterno" placeholder="Apellido materno" th:field="*{ApellidoMaterno}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)" required>
                                         <span id="errorApellidoMaterno"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('ApellidoMaterno')}" th:errors="*{ApellidoMaterno}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="formularioUsername" class="form-label">Username</label>
-                                        <input type="text" class="form-control" id="Username" placeholder="Username" th:field="*{UserName}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)">
+                                        <input type="text" class="form-control" id="Username" placeholder="Username" th:field="*{UserName}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)" required>
                                         <span id="errorUsername"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('UserName')}" th:errors="*{UserName}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="FechaNacimiento" class="form-label">Fecha de nacimiento</label>
-                                        <input type="date" class="form-control" id="FechaNacimiento" th:field="*{FechaNacimiento}" onblur="FechaBlur(this)">
+                                        <input type="date" class="form-control" id="FechaNacimiento" th:field="*{FechaNacimiento}" onblur="FechaBlur(this)" required>
                                         <span id="errorFechaNacimiento"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('FechaNacimiento')}" th:errors="*{FechaNacimiento}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="formularioEmail" class="form-label">Email</label>
-                                        <input type="text" class="form-control" id="Email" placeholder="ejemplo@email.com" th:field="*{Email}" onkeypress="Correo(this, event)" onblur="CorreoBlur(this)">
+                                        <input type="text" class="form-control" id="Email" placeholder="ejemplo@email.com" th:field="*{Email}" onkeypress="Correo(this, event)" onblur="CorreoBlur(this)" required>
                                         <span id="errorEmail"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('Email')}" th:errors="*{Email}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="formularioPassword" class="form-label">Contraseña</label>
-                                        <input type="password" class="form-control" id="Password" th:field="*{Password}" onkeypress="PasswordValidacion(this, event)" onblur="PasswordBlur(this)">
+                                        <input type="password" class="form-control" id="Password" th:field="*{Password}" onkeypress="PasswordValidacion(this, event)" onblur="PasswordBlur(this)" required>
                                         <span id="errorPassword"></span>
-                                        <span class="text-danger" th:if="${#fields.hasErrors('Password')}" th:errors="*{Password}">text</span>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Password')}" th:errors="*{Password}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="formularioNumeroTelefono" class="form-label">Número de teléfono</label>
-                                        <input type="text" class="form-control" id="NumeroTelefono" placeholder="1234567890" th:field="*{Telefono}" onkeypress="SoloNumeros(this, event)" onblur="SoloNumerosBlur(this)">
+                                        <input type="text" class="form-control" id="NumeroTelefono" placeholder="1234567890" th:field="*{Telefono}" onkeypress="SoloNumeros(this, event)" onblur="SoloNumerosBlur(this)" required>
                                         <span id="errorNumeroTelefono"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('Telefono')}" th:errors="*{Telefono}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio"  name="radioSexo" checked th:value="F" th:field="*{Sexo}">
+                                        <div class="form-check" required>
+                                            <input class="form-check-input" type="radio" name="radioSexo" th:value="F" th:field="*{Sexo}">
                                             <label for="formularioSexo" class="form-check-label">Femenino</label>
                                         </div>
                                         <div class="form-check">
@@ -193,20 +193,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="formularioRol" class="form-label">Rol en el sistema</label>
-                                        <select id="formularioRol" class="form-select" th:field="*{Rol.IdRol}">
+                                        <select id="formularioRol" class="form-select" th:field="*{Rol.IdRol}" required>
                                             <option value="0">Seleccionar un rol...</option>
                                             <option th:each="rol : ${roles}" th:value="${rol.IdRol}" th:text="${rol.Nombre}"></option>
                                         </select>
                                         <span class="text-danger" th:if="${#fields.hasErrors('Rol.Nombre')}" th:errors="*{Rol.Nombre}"></span>
                                     </div>
                                 </div>
-                            </form>
+                            </div>
                         </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-primary">Actualizar</button>
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                    </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -214,71 +214,72 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 claas="modal-title fs-5">Actualziar dirección</h1>
+                        <h1 claas="modal-title fs-5">Agregar dirección</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid">
-                            <form th:object="${usuario.Direccion.get()}"> ME QUEDE AQUI
-                                <div class="mb-3 col-lg-3 col-md-4">
-                                    <label for="formularioPais" class="form-label">Pais</label>
-                                    <select id="ddlpais" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.Pais.IdPais}">
-                                        <option value=0>Seleccione su pais...</option>
-                                        <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
-                                    </select>
-                                    <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Estado.Pais.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Estado.Pais.Nombre}"></span>
-                                </div>
-                                <div class="mb-3 col-lg-3 col-md-4">
-                                    <label for="formularioEstado" class="for-label">Estado</label>
-                                    <select id="ddlestado" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.Estado.IdEstado}">
-                                        <option value=0>Seleccione un pais primero</option>
-                                        <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}"</option>
-                                    </select>
-                                    <span class="text-danger"th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Estado.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Estado.Nombre}"></span>
-                                </div>
-                                <div class="mb-3 col-lg-3 col-md-4">
-                                    <label for="formularioMunicipio" class="form-label">Municipio</label>
-                                    <select id="ddlmunicipio" class="form-select" th:field="*{Direcciones[0].Colonia.Municipio.IdMunicipio}">
-                                        <option value=0>Seleccionar un estado primero</option>
-                                        <option th:each="municipio: ${municipios}" th:value="${municipio.IdMunicipio}" th:text="${municipio.Nombre}"></option>
-                                    </select>
-                                    <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Municipio.Nombre')}" th:errors="*{Direcciones[0].Colonia.Municipio.Nombre}"></span>
-                                </div>
-                                <div class="mb-3 col-lg-3 mol-md-6">
-                                    <label for="formularioColonia" class="form-label">Colonia:</label>
-                                    <select id="ddlcolonia" class="form-select" th:field="*{Direcciones[0].Colonia.IdColonia}">
-                                        <option value=0>Seleccione un municipio primero</option>
-                                        <option th:each="colonia : ${colonias}" th:value="${colonia.IdColonia}" th:text="${colonia.nombre}"></option>
-                                    </select>
-                                    <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.Nombre')}" th:errors="*{Direcciones[0].Colonia.Nombre}"></span>
-                                </div>
-                                <div class="mb-3 col-lg-4 col-md-6">
-                                    <label for="formularioCodigoPostal" class="form-label">Código postal</label>
-                                    <input id="codigopostal" type="number" class="form-control" placeholder="12345" th:field="*{Direcciones[0].Colonia.CodigoPostal}" disabled>
-                                    <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Colonia.CodigoPostal')}" th:errors="*{Direcciones[0].Colonia.CodigoPostal}"></span>
-                                </div>
-                                <div class="mb-3 col-lg-4 col-md-6">
-                                    <label for="formularioCalle" class="form-label">Calle</label>
-                                    <input type="text" class="form-control" id="formularioCalle" placeholder="Calle" th:field="*{Direcciones[0].Calle}">
-                                    <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].Calle')}" th:errors="*{Direcciones[0].Calle}"></span>
-                                </div>
-                                <div class="mb-3 col-lg-4 col-md-6">
-                                    <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
-                                    <input type="text" class="form-control" placeholder="#10" th:field="*{Direcciones[0].NumeroInterior}">
-                                    <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].NumeroInterior')}" th:errors="*{Direcciones[0].NumeroInterior}"></span>
-                                </div>
-                                <div class="mb-3 col-lg-4 col-md-6">
-                                    <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
-                                    <input type="text" class="form-control" placeholder="#123" th:field="*{Direcciones[0].NumeroExterior}">
-                                    <span class="text-danger" th:if="${#fields.hasErrors('Direcciones[0].NumeroExterior')}" th:errors="*{Direcciones[0].NumeroExterior}"></span>
-                                </div>
-                                <div class="mb-3 row">
-                                    <button type="button" class="btn btn-danger col-lg-4">Cancelar</button>
-                                    <button type="reset" class="btn btn-secondary col-lg-4">Borrar</button>
-                                    <button type="submit" class="btn btn-success col-lg-4">Aceptar</button>
+                            <form method="post" th:object="${direccion}">
+                                <div class="row">
+                                    <div class="mb-3 col-lg-6 col-md-12">
+                                        <label for="formularioPais" class="form-label">Pais</label>
+                                        <select id="ddlpais" class="form-select" required>
+                                            <option value=0>Seleccione su pais...</option>
+                                            <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
+                                        </select>
+                                        <span id="errorvalidacionPais" class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.Estado.Pais.IdPais')}" th:errors='*{Colonia.Municipio.Estado.Pais.IdPais}'></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-12">
+                                        <label for="formularioEstado" class="for-label">Estado</label>
+                                        <select id="ddlestado" class="form-select" th:field="*{Colonia.Municipio.Estado.IdEstado}" required>
+                                            <option value=0>Seleccione un pais primero</option>
+                                            <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}"</option>
+                                        </select>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.Estado.IdEstado')}" th:errors="*{Colonia.Municipio.Estado.IdEstado}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-12">
+                                        <label for="formularioMunicipio" class="form-label">Municipio</label>
+                                        <select id="ddlmunicipio" class="form-select" th:field="*{Colonia.Municipio.IdMunicipio}" required>
+                                            <option value=0>Seleccionar un estado primero</option>
+                                            <option th:each="municipio: ${municipios}" th:value="${municipio.IdMunicipio}" th:text="${municipio.Nombre}"></option>
+                                        </select>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.IdMunicipio')}" th:errors="*{Colonia.Municipio.IdMunicipio}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 mol-md-12">
+                                        <label for="formularioColonia" class="form-label">Colonia:</label>
+                                        <select id="ddlcolonia" class="form-select" th:field="*{Colonia.IdColonia}" required>
+                                            <option value=0>Seleccione un municipio primero</option>
+                                            <option th:each="colonia : ${colonias}" th:value="${colonia.IdColonia}" th:text="${colonia.nombre}"></option>
+                                        </select>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.IdColonia')}" th:errors="*{Colonia.IdColonia}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-6">
+                                        <label for="formularioCodigoPostal" class="form-label">Código postal</label>
+                                        <input id="codigopostal" type="number" class="form-control" placeholder="12345" th:field="*{Colonia.CodigoPostal}" disabled>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.CodigoPostal')}" th:errors="*{Colonia.CodigoPostal}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-6">
+                                        <label for="formularioCalle" class="form-label">Calle</label>
+                                        <input type="text" class="form-control" id="formularioCalle" placeholder="Calle" th:field='*{Calle}' required>
+                                        <span id="errorCalle" class="text-danger" th:if="${#fields.hasErrors('Calle')}" th:errors='*{Calle}'></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-6">
+                                        <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
+                                        <input type="text" class="form-control" placeholder="#10" th:field="*{NumeroInterior}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)">
+                                        <span class="text-danger" th:if="${#fields.hasErrors('NumeroInterior')}" th:errors="*{NumeroInterior}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-6">
+                                        <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
+                                        <input type="text" class="form-control" placeholder="#123" th:field="*{NumeroExterior}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)" required>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('NumeroExterior')}" th:errors="*{NumeroExterior}"></span>
+                                    </div>
                                 </div>
                             </form>
                         </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Actualizar dirección</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </div>
                 </div>
             </div>
@@ -286,6 +287,427 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </body>
     
     <script>
+        
+        $(document).ready(function(){
+            
+            $("#ddlpais").change(function(){
+                
+                var IdPais =  $("#ddlpais").val();
+                
+                if (IdPais != 0) {
+                    
+                    $.ajax({
+                       
+                       url: "/usuario/getestadosbypais/" + IdPais,
+                       type: "GET",
+                       dataType: "json",
+                       success: function(data, textStatus, jqXHR){
+                           
+                           $("#ddlestado").empty();
+                           $("#ddlestado").append("<option value=0>Seleccione un estado</option>");
+                           $.each(data.objects, function(i, estado){
+                              
+                              $("#ddlestado").append("<option value=" + estado.IdEstado + ">" + estado.Nombre + "</option>")
+        
+                           });
+                           
+                       },
+                       error: function(jqXHR, textStatus, errorThrown){
+                           
+                           alert("No se pudo procesar la obtenci[on de los ESTADOS");
+                           
+                       }
+                        
+                    });
+                    
+                } else {
+                    
+                    $("#ddlestado").empty();
+                    $("#ddlestado").append("<option value=0>Seleccione un pais primero</option>");
+                    
+                    $("#ddlmunicipio").empty();
+                    $("#ddlmunicipio").append("<option value=0>Seleccione un estado primero</option>");
+                    
+                    $("#ddlcolonia").empty();
+                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                    
+                    $("#codigopostal").empty();
+                    $("#codigopostal").val("12345");
+                    
+                }
+                
+            });
+            
+            $("#ddlestado").change(function(){
+                
+                var IdEstado = $("#ddlestado").val();
+                
+                if (IdEstado != 0) {
+    
+                    $.ajax({
+                       
+                       url: "/usuario/getmunicipiosbyestado/" + IdEstado,
+                       type: "GET",
+                       dataType: "json",
+                       success : function(data, textStatus, jqXHR){
+                           
+                           $("#ddlmunicipio").empty();
+                           $("#ddlmunicipio").append("<option value=0>Seleccione un municipio</option>");
+                           $.each(data.objects, function(i, municipio){
+                               
+                               $("#ddlmunicipio").append("<option value=" + municipio.IdMunicipio +">" + municipio.Nombre +"</option>");
+                               
+                           })
+                           
+                       },
+                       error: function(jqXHR, textStatus, errorThrown){
+                           
+                           alert("No se pudo procesar la obtenci[on de los MUNICIPIOS");
+                           
+                       }
+                
+                    });
+    
+                } else {
+                    
+                    $("#ddlmunicipio").empty();
+                    $("#ddlmunicipio").append("<option value=0>Seleccione un estado primero</option>");
+                    
+                    $("#ddlcolonia").empty();
+                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                    
+                    $("#codigopostal").empty();
+                    $("#codigopostal").val("12345");
+                    
+                }
+                
+            });
+            
+            $("#ddlmunicipio").change(function(){
+                
+                var IdMunicipio = $("#ddlmunicipio").val();
+                
+                if (IdMunicipio != 0) {
+    
+                    $.ajax({
+                       
+                       url: "/usuario/getcoloniasbymunicipio/" + IdMunicipio,
+                       type: "GET",
+                       dataType: "json",
+                       success: function(data, textStatus, jqXHR){
+                           
+                           $("#ddlcolonia").empty();
+                           $("#ddlcolonia").append("<option value=0>Seleccione una colonia</option>");
+                           $.each(data.objects, function(i, colonia){
+                               
+                              $("#ddlcolonia").append("<option value=" + colonia.IdColonia +" data-cp=" + colonia.CodigoPostal + ">" + colonia.Nombre + "</option>");
+                               
+                           });
+                           
+                       },
+                       error: function(jqXHR, textStatus, errorThrown){
+                           
+                           alert("No se pudo procesar la obtención de las COLONIAS")
+                           
+                       }
+                
+                    });
+    
+                } else {
+                    
+                    $("#ddlcolonia").empty();
+                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                    
+                    $("#codigopostal").empty();
+                    $("#codigopostal").val("12345");
+                    
+                }
+                
+            });
+            
+            $("#ddlcolonia").change(function(){
+                
+                var IdColonia = $("#ddlcolonia").val();
+                
+                if (IdColonia != 0) {
+                    
+                    $("#codigopostal").val($("#ddlcolonia option:selected").data("cp"));
+                    
+                } else {
+                    
+                    $("#codigopostal").empty();
+                    $("codigopostal").val("12345");
+                    
+                }
+                
+            });
+        
+        });
+        
+        function SoloLetras(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            console.log(valorCompleto);
+            
+            var regex = /^[a-zA-Z áéíóú]+$/;
+            
+            if (valorCompleto.length > 50) {
+                
+                console.log("No paso la regex");
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Máximo 50 carácteres').css('color', 'red');
+                
+            } else {
+                
+                if (regex.test(valorCompleto)) {
+                
+                    console.log("Paso la regex");
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+
+                } else {
+
+                    console.log("No paso la regex");
+                    event.preventDefault();
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Solo letras').css('color', 'red');
+
+                }
+                
+            }
+            
+        }
+        
+        function SoloLetrasBlur(input){
+            
+            var regex = /^[a-zA-Z áéíóú]{1,50}$/;
+            
+            if (regex.test($(input).val())) {
+    
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+    
+            }
+            
+        }
+        
+        function SoloNumeros(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            console.log(valorCompleto);
+            
+            var regex = /^[\d]+$/;
+            
+            if (valorCompleto.length > 10) {
+                
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Máximo 10 dígitos').css('color', 'red');
+    
+            } else {
+                
+                if (regex.test(valorCompleto)) {
+                
+                    console.log("Si paso la regex");
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+
+                } else {
+
+                    console.log("No paso la regex");
+                    event.preventDefault();
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Solo numeros').css('color', 'red');
+
+                }
+                
+            }
+            
+        }
+        
+        function SoloNumerosBlur(input){
+            
+            var regex = /^[\d]{1,10}$/;
+            
+            if (regex.test($(input).val())) {
+                
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                
+            }
+            
+        }
+        
+        function LetrasYNumeros(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            
+            var regex = /^[a-zA-Z\d]+$/;
+            
+            if (valorCompleto.length > 20) {
+                
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id +'').text('No mayor a 20 carácteres').css('color', 'red');
+                
+            } else {
+                
+                if (regex.test(valorCompleto)) {
+                    
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+
+                } else {
+
+                    event.preventDefault();
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Sólo letras y números').css('color', 'red');
+
+                }
+                
+            }
+            
+        }
+        
+        function LetrasYNumerosBlur(input){
+            
+            var regex = /^[a-zA-Z\d]{1,20}$/;
+            
+            if (regex.test($(input).val())) {
+                
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                
+            }
+            
+        }
+        
+        function Correo(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            
+            if (valorCompleto.length > 254) {
+                
+                event.preventDefault();
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Demasiados carácteres').css('color', 'red');
+                
+            }
+            
+            
+        }
+        
+        function CorreoBlur(input){
+            
+            console.log($(input).val());
+            var regex = /^[a-zA-Z\d\.]+@[a-z]+\.com$/;
+            
+            if (regex.test($(input).val())) {
+                
+                console.log("Si paso la prueba");
+                $('#error' + input.id + '').text('');
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                
+            } else {
+                
+                $('#error' + input.id + '').text('Email inválido').css('color', 'red');
+                $(input).removeClass('border border-success');
+                $(input).addClass('border border-danger');
+                
+            }
+            
+        }
+        
+        function PasswordValidacion(input, event){
+            
+            var valorCompleto = $(input).val() + event.key;
+            
+            console.log(valorCompleto);
+            
+            var regex = /^[a-zA-Z\d`~!@#$%^&\.\*()-_]+$/;
+            
+            if (valorCompleto.length < 8 || valorCompleto.length > 16) {
+                
+               $(input).addClass('border border-danger');
+               $('#error' + input.id + '').text('La contraseña debe de ser de 8 - 16 carácteres').css('color', 'red');
+    
+            } else {
+                
+                if (regex.test(valorCompleto)) {
+                
+                    console.log("Si paso la validacion");
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+
+                } else {
+
+                    console.log("No paso la validacion");
+                    event.preventDefault();
+                    $('#error' + input.id + '').text('La contraseña debe contener al menos 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial');
+
+                }
+                
+            }
+        }
+        
+        function PasswordBlur(input){
+            
+            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\.\*()_])[a-zA-Z\d`~!@#$%^&\.\*()_]{8,16}$/;
+            
+            if (regex.test($(input).val())) {
+                
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                $('#error' + input.id + '').text('');
+                
+            } else {
+                
+                $(input).removeClass('border border-success');
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Contraseña inválida').css('color', 'red');
+                
+            }
+            
+        }
+        
+        function FechaBlur(input){
+            
+            var fecha = new Date($(input).val());
+            var fechaHoy = new Date(Date.now());
+            
+            var fechaResultante = fechaHoy.getTime() - fecha.getTime();
+            
+            fechaResultante = fechaResultante /( 1000 * 60 * 60 * 24);
+            
+            var mes = fecha.getMonth() + 1;
+            var dia = fecha.getUTCDate();
+            
+            if (mes < 1 || mes  > 12 || dia < 1 || dia > 31) {
+            
+                $(input).removeClass('border border-success');
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('Ingrese una fecha válida').css('color', 'red');
+                
+            } else if (fechaResultante < 6570) {
+                
+                $(input).removeClass('border border-success');
+                $(input).addClass('border border-danger');
+                $('#error' + input.id + '').text('No es mayor de edad').css('color', 'red');
+    
+            } else{
+                
+                $(input).removeClass('border border-danger');
+                $(input).addClass('border border-success');
+                $('#error' + input.id + '').text('');
+                
+            }
+            
+        }
         
     </script>
     

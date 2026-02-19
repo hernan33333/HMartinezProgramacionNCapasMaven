@@ -10,6 +10,7 @@ import com.alien07.HMartinezProgramacionNCapasMaven.DAO.MunicipioDAOImplementati
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.PaisDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.RolDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.UsuarioDAOImplementation;
+import com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Result;
 import jakarta.validation.Valid;
@@ -68,6 +69,8 @@ public class UsuarioController {
         
         model.addAttribute("usuario", resultUsuario.object);
         
+        model.addAttribute("direccion", new Direccion());
+        
         Result resultPais = paisDAOImplementation.GetAll();
         model.addAttribute("paises", resultPais.objects);
         
@@ -93,11 +96,25 @@ public class UsuarioController {
         return "formulario";
     }
     
+    @PostMapping("actualizarusuario")
+    public String ActualizarUsuario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, Model model){
+    
+        if (bindingResult.hasErrors()) {
+            
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+            model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+            
+            
+            return "UsuarioDetail";
+        }
+        
+        return "usuario";
+    
+    }
+    
     @PostMapping("formulario")
     public String Formulario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, @RequestParam("imagenFile") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException{
-        
-        
-//        Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
 //        
 //        if (result.correct) {
 //            
@@ -160,6 +177,8 @@ public class UsuarioController {
             }
 
         }
+        
+        Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
 
         return "redirect:/usuario";
     
