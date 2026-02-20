@@ -10,6 +10,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"/>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body>
         
@@ -75,7 +78,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                             <i class="bi bi-pen-fill" style="font-size: 15px"></i>
                                             <span class="mt-auto mb-auto">Editar</span>
                                         </a>
-                                        <button class="btn btn-danger col-lg-6 col-md-12 mt-2 d-flex flex-column align-items-center" style="width: 45px;height: 60px;font-size: 10px">
+                                        <button class="btn btn-danger col-lg-6 col-md-12 mt-2 d-flex flex-column align-items-center" style="width: 45px;height: 60px;font-size: 10px" th:onclick="'ConfirmarEliminacion(' + ${usuario.IdUsuario} + ')'">
                                             <i class="bi bi-trash3-fill" style="font-size: 15px"></i>
                                             <span class="mt-auto mb-auto">Eliminar</span>
                                         </button>
@@ -151,6 +154,90 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         </footer>
         
     </body>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:if="${successMessage}" th:inline="javascript">
+        Swal.fire({
+            title: "Usuario agregado correctamente",
+            icon: "success",
+            draggable: true
+        });
+    </script>
+    
+    <script>
+        function ConfirmarEliminacion(IdUsuario){
+            
+            Swal.fire({
+                title: "¿Está seguro que quiere eliminar al usuario?",
+                text: "No se podrán revertir los cambios",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "No, cancelar",
+                confirmButtonText: "Sí, eliminar"
+            }).then((result) => {
+                
+              if (result.isConfirmed) {
+                  
+                Swal.fire({
+                    title: 'Eliminando...',
+                    text: 'Por favor, espere',
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });  
+                
+                $.ajax({
+                   
+                    url:"usuario/eliminarusuario/" + IdUsuario,
+                    type:"DELETE",
+                    dataType:"json",
+                    success: function(data, textStatus, jqXHR){
+                        
+                        if (data.correct) {
+    
+                            Swal.fire({
+                                title: "¡Usuario eliminado!",
+                                text: "Se eliminó correctamente al usuario y sus direcciones.",
+                                icon: "success",
+                                didClose: () => {
+                                    location.reload(true);
+                                }
+                            });
+                        } else {
+                            
+                            Swal.fire({
+                                icon: "error",
+                                title: "¡Algo salió mal!",
+                                text: "No se pudo eliminar al usuario.",
+                                didClose: () => {
+                                    location.reload(true);
+                                }
+                            });
+                            
+                        }
+                        
+                        
+                    },
+                    error: function(jqXHR, textStatus, errorThrown){
+                        
+                        Swal.fire({
+                            icon: "error",
+                            title: "¡Algo salió mal!",
+                            text: "Hubo un problema al intentar conectar con el servidor.",
+                            didClose: () => {
+                                location.reload(true);
+                            }
+                        });
+                    }
+                    
+                });
+                
+              }
+            });
+        }
+        
+    </script>
+    
 </html>
 

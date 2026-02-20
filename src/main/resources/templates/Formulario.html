@@ -11,6 +11,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"/>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body>
         <div class="container">
@@ -167,7 +168,25 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </form>
             </div>
         </div>
+        
     </body>
+    
+    <script th:if="${errorMessage}"th:inline="javascript">
+        
+        Swal.fire({
+            icon: "error",
+            title: "Algo salió mal",
+            text: "No se insertó al usuario",
+            footer: 
+            '<a href="#errorAgregar" data-bs-toggle="collapse" aria-expanded="false" aria-controls="errorAgregar" role="button">¿Por qué sucedió esto?</a>\n\
+            <div class="collapse" id="errorAgregar">\n\
+            <div class="card card-body">\n\
+                El username y/o correo ya están registrados. Pruebe cambiarlos.\n\
+            </div>\n\
+        </div>'
+        });
+        
+    </script>
     
     <script>
         

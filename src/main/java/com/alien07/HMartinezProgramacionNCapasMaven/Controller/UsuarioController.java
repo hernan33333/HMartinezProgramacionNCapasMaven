@@ -5,6 +5,7 @@
 package com.alien07.HMartinezProgramacionNCapasMaven.Controller;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.ColoniaDAOImplementation;
+import com.alien07.HMartinezProgramacionNCapasMaven.DAO.DireccionDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.EstadoDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.MunicipioDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.PaisDAOImplementation;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +43,8 @@ public class UsuarioController {
     @Autowired
     private UsuarioDAOImplementation usuarioDAOImplementation;
     @Autowired
+    private DireccionDAOImplementation direccionDAOImplementation;
+    @Autowired
     private PaisDAOImplementation paisDAOImplementation;
     @Autowired
     private RolDAOImplementation rolDAOImplementation;
@@ -61,6 +65,17 @@ public class UsuarioController {
         return "Usuario";
     
     }
+   
+   @PostMapping("agregardireccion/{idusuario}")
+   public String AgregarDireccion(@Valid @ModelAttribute("direccion") Direccion direccion, BindingResult bindingResult, Model model){
+   
+       if (bindingResult.hasErrors()) {
+           
+       }
+       
+       return "";
+       
+   }
     
     @GetMapping("getbyid/{idusuario}")
     public String GetById(@PathVariable("idusuario") int IdUsuario, Model model){
@@ -96,6 +111,48 @@ public class UsuarioController {
         return "formulario";
     }
     
+    @DeleteMapping("eliminarDireccion/{IdDireccion}")
+    @ResponseBody
+    public Result EliminarDireccion(@PathVariable("IdDireccion") int IdDireccion){
+    
+        Result direccion = direccionDAOImplementation.GetById(IdDireccion);
+        Result resultEliminacion = new Result();
+        
+        if (direccion.correct) {
+            
+            resultEliminacion  = direccionDAOImplementation.DireccionDelete(IdDireccion);
+            
+        } else {
+        
+            resultEliminacion.correct = false;
+        
+        }
+        
+        return resultEliminacion;
+    
+    }
+    
+    @DeleteMapping("eliminarusuario/{IdUsuario}")
+    @ResponseBody
+    public Result EliminarUsuario(@PathVariable("IdUsuario") int IdUsuario){
+        
+        Result usuario = usuarioDAOImplementation.GetById(IdUsuario);
+        Result resultEliminacion = new Result();
+        
+        if (usuario.correct) {
+            
+            resultEliminacion = usuarioDAOImplementation.DeleteById(IdUsuario);
+            
+        } else {
+        
+            resultEliminacion.correct = false;
+        
+        }
+        
+        return resultEliminacion;
+    
+    }
+    
     @PostMapping("actualizarusuario")
     public String ActualizarUsuario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, Model model){
     
@@ -113,74 +170,66 @@ public class UsuarioController {
     
     }
     
+    @PostMapping("actualizarimagen/{IdUsuario}")
+    public String ActualizarImagen(@PathVariable("IdUsuario") int IdUsuario, @RequestParam("imagenFile") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException{
+    
+        Boolean esImagenValida = verificarImagen(imagen);
+        Result resultImagen = new Result();
+        
+        if (esImagenValida) {
+            
+            String imagenConvertida = Base64.getEncoder().encodeToString(imagen.getBytes());
+            resultImagen = usuarioDAOImplementation.imagenUpdate(imagenConvertida, IdUsuario);
+            
+            redirectAttributes.addFlashAttribute("successMessage", "¡Se actualizó la imagen con éxito!");
+            return "redirect:/UsuarioDetail";
+            
+        } else {
+        
+            resultImagen.correct = false;
+            redirectAttributes.addFlashAttribute("errorMessage", "¡Hubo un error al intentar actualziar la imagen!");
+            return "redirect:/UsuarioDetail";
+            
+        }
+    
+    }
+    
     @PostMapping("formulario")
     public String Formulario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, @RequestParam("imagenFile") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException{
-//        
-//        if (result.correct) {
-//            
-//            redirectAttributes.addFlashAttribute("successMessage", "Se agregó correctamente la información del usuario.");
-//            
-//        } else {
-//        
-//            redirectAttributes.addFlashAttribute("errorMessage", "Hubo un error al intentar registrar al usuario: " + result.errorMessage);
-//        
-//        }
         
         if (bindingResult.hasErrors()) {
             
-            model.addAttribute("usuario", usuario);
-            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-            model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
-            
-            int IdPais = usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais();
-            
-            if (IdPais > 0) {
-                
-                model.addAttribute("estados", estadoDAOImplementation.GetByPais(IdPais).objects);
-                
-                int IdEstado = usuario.Direcciones.get(0).Colonia.Municipio.Estado.getIdEstado();
-                
-                if (IdEstado > 0) {
-                    
-                    model.addAttribute("municipios", municipioDAOImplementation.GetByEstado(IdEstado).objects);
-                    
-                    int IdMunicimipio = usuario.Direcciones.get(0).Colonia.Municipio.getIdMunicipio();
-                    
-                    if (IdMunicimipio > 0) {
-                        
-                        model.addAttribute("colonias", coloniaDAOImplementation.GetByMunicipio(IdMunicimipio).objects);
-                        
-                    }
-                    
-                }
-                
-            }
+            agregarValoresModel(model, usuario);
             
             return "formulario";
             
         }
         
-        if (imagen != null) {
-                
-            String nombreImagen = imagen.getOriginalFilename();
-            String[] cadena = nombreImagen.split("\\.");
-
-            if (cadena[1].equals("jpg") || cadena[1].equals("png") || cadena[1].equals("jpeg")) {
-
-                String imagenConvertida = Base64.getEncoder().encodeToString(imagen.getBytes());
-                usuario.setImagen(imagenConvertida);
-
-            } else {
-
-                model.addAttribute("imagenFile", imagen);
-
-            }
-
+        Boolean esImagenValida = verificarImagen(imagen);
+        
+        if (esImagenValida) {
+            
+            String imagenConvertida = Base64.getEncoder().encodeToString(imagen.getBytes());
+            usuario.setImagen(imagenConvertida);
+            
         }
         
         Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
-
-        return "redirect:/usuario";
+        
+        if (result.correct) {
+            
+            redirectAttributes.addFlashAttribute("successMessage", "Se agregó correctamente el usuario.");
+            return "redirect:/usuario";
+            
+        } else {
+        
+            model.addAttribute("errorMessage", "Hubo un error al intentar registrar al usuario: " + result.errorMessage);
+            
+            agregarValoresModel(model, usuario);
+            
+            return "formulario";
+            
+        }
     
     }
     
@@ -211,6 +260,78 @@ public class UsuarioController {
         Result result = coloniaDAOImplementation.GetByMunicipio(IdMunicipio);
         
         return result;
+    
+    }
+    
+    public Boolean verificarImagen(MultipartFile imagen){
+        
+        if (imagen != null) {
+                
+            String nombreImagen = imagen.getOriginalFilename();
+            
+            if (nombreImagen == null || nombreImagen.trim().isEmpty()) {
+                
+                return false;
+                
+            }
+            
+            int ultimoIndice = nombreImagen.lastIndexOf('.');
+            
+            if (ultimoIndice <= 0 || ultimoIndice == nombreImagen.length() - 1) {
+                
+                return false;
+                
+            }
+            
+            String extension = nombreImagen.substring(ultimoIndice + 1).toLowerCase();
+
+            if (extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")) {
+                
+                return true;
+
+            } else {
+
+                return false;
+
+            }
+
+        } else {
+        
+            return false;
+        
+        }
+        
+    }
+    
+    public void agregarValoresModel(Model model, Usuario usuario){
+        
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
+        model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+
+        int IdPais = usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais();
+
+        if (IdPais > 0) {
+
+            model.addAttribute("estados", estadoDAOImplementation.GetByPais(IdPais).objects);
+
+            int IdEstado = usuario.Direcciones.get(0).Colonia.Municipio.Estado.getIdEstado();
+
+            if (IdEstado > 0) {
+
+                model.addAttribute("municipios", municipioDAOImplementation.GetByEstado(IdEstado).objects);
+
+                int IdMunicimipio = usuario.Direcciones.get(0).Colonia.Municipio.getIdMunicipio();
+
+                if (IdMunicimipio > 0) {
+
+                    model.addAttribute("colonias", coloniaDAOImplementation.GetByMunicipio(IdMunicimipio).objects);
+
+                }
+
+            }
+
+        }
     
     }
     

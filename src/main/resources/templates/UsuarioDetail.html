@@ -12,6 +12,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </head>
     <body style="background-color: #E3E3FF">
         <div class="container">
@@ -25,7 +26,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                                 <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                                     </svg>
                                     <img id="imagenUsuario" style=" max-width: 250px; max-height: auto" class="mx-auto" th:if="${usuario.Imagen != null}" th:src="'data:image/jpeg;base64,' + ${usuario.Imagen}"/>
-                                    <button class="btn btn-success position-absolute bottom-0 end-0">
+                                    <button class="btn btn-success position-absolute bottom-0 end-0" data-bs-toggle="modal" data-bs-target="#modalImagen">
                                         <i class="bi bi-camera-fill"></i>
                                     </button>
                                 </div>
@@ -97,7 +98,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                                 <button id="botonEditarDireccion" class="btn btn-sm btn-warning" th:value="${numero.index}" onclick="formularioDireccion(this)">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </button>
-                                                <button class="btn btn-sm btn-danger">
+                                                <button id="botonEliminarDireccion" class="btn btn-sm btn-danger" th:onclick="'ConfirmarEliminacion(' + ${direccion.IdDireccion} + ')'">
                                                     <i class="bi bi-trash3-fill"></i>
                                                 </button>
                                             </td>
@@ -115,6 +116,34 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </div>
                 </div>
             </div>          
+        </div>
+        
+        <div id="modalImagen" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <form action="post" th:object="${usuario}" th:action="@{/usuario/actualizarimagen/{idusuario} (idusuario = ${usuario.IdUsuario})}" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <h1 class="modal-title fs-5">Actualizar imagen</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container-fluid">
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="form-label">Seleccione una imagen</label>
+                                        <input type="file" class="form-control" id="imagenActualizar" accept="image/*">
+                                        <img id="muestraImagenActualizar" style="max-width: 150px; max-height: auto" class="mx-auto"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
         </div>
         
         <div id="modalUsuario" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
@@ -219,6 +248,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid">
+<!--                            <form method="post" th:object="${direccion}" th:action="@{/usuario/agregardireccion/{idusuario = ${usuario.IdUsuario}}}">-->
                             <form method="post" th:object="${direccion}">
                                 <div class="row">
                                     <div class="mb-3 col-lg-6 col-md-12">
@@ -260,17 +290,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-6">
                                         <label for="formularioCalle" class="form-label">Calle</label>
-                                        <input type="text" class="form-control" id="formularioCalle" placeholder="Calle" th:field='*{Calle}' required>
-                                        <span id="errorCalle" class="text-danger" th:if="${#fields.hasErrors('Calle')}" th:errors='*{Calle}'></span>
+                                        <input type="text" class="form-control" id="Calle" placeholder="Calle" th:field='*{Calle}' onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)" required>
+                                        <span id="errorCalle"></span>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Calle')}" th:errors='*{Calle}'></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-6">
                                         <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
-                                        <input type="text" class="form-control" placeholder="#10" th:field="*{NumeroInterior}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)">
+                                        <input type="text" class="form-control" id="NumeroInterior" placeholder="#10" th:field="*{NumeroInterior}">
+                                        <span id="errorNumeroInterior"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('NumeroInterior')}" th:errors="*{NumeroInterior}"></span>
                                     </div>
                                     <div class="mb-3 col-lg-6 col-md-6">
                                         <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
-                                        <input type="text" class="form-control" placeholder="#123" th:field="*{NumeroExterior}" onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)" required>
+                                        <input type="text" class="form-control" id="NumeroExterior" placeholder="#123" th:field="*{NumeroExterior}" required>
+                                        <span id="errorNumeroInterior"></span>
                                         <span class="text-danger" th:if="${#fields.hasErrors('NumeroExterior')}" th:errors="*{NumeroExterior}"></span>
                                     </div>
                                 </div>
@@ -289,6 +322,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     <script>
         
         $(document).ready(function(){
+            
+            $("#imagenActualizar").change(function(){
+            
+                if (this.files && this.files[0]) {
+                
+                    var reader = new FileReader();
+                    
+                    reader.onload = function(e){
+                        
+                        $("#muestraImagenActualizar").attr('src', e.target.result);
+                        
+                    }
+                    
+                    reader.readAsDataURL(this.files[0]);
+                
+                }
+        
+            });
             
             $("#ddlpais").change(function(){
                 
@@ -706,6 +757,81 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 $('#error' + input.id + '').text('');
                 
             }
+            
+        }
+        
+        function ConfirmarEliminacion(IdDireccion){
+            
+            Swal.fire({
+                title: "¿Está seguro que quiere eliminar la dirección?",
+                text: "No se podrán revertir los cambios",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#3085d6",
+                cancelButtonColor: "#d33",
+                cancelButtonText: "No, cancelar",
+                confirmButtonText: "Sí, eliminar"
+              }).then((result) => {
+                  
+                if (result.isConfirmed) {
+                    
+                    Swal.fire({
+                        title: 'Eliminando...',
+                        text: 'Por favor, espere',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                
+                    $.ajax({
+                        
+                        url:"/usuario/eliminarDireccion/" + IdDireccion,
+                        type:"DELETE",
+                        dataType:"json",
+                        success: function(data){
+                            
+                            if (data.correct) {
+                                
+                                Swal.fire({
+                                    title: "¡Dirección eliminada!",
+                                    text: "Se eliminó correctamente la dirección del usuario.",
+                                    icon: "success",
+                                    didClose: () => {
+                                        location.reload(true);
+                                    }
+                                });
+                                
+                            } else {
+                                
+                                Swal.fire({
+                                    icon: "error",
+                                    title: "¡Algo salió mal!",
+                                    text: "No se pudo eliminar la dirección.",
+                                    didClose: () => {
+                                        location.reload(true);
+                                    }
+                                });
+                                
+                            }
+                        },
+                        error: function(){
+                            
+                            Swal.fire({
+                                icon: "error",
+                                title: "¡Algo salió mal!",
+                                text: "Hubo un problema al intentar conectar con el servidor.",
+                                didClose: () => {
+                                    location.reload(true);
+                                }
+                            });
+                            
+                        }
+                        
+                    });
+                }
+                
+            });
             
         }
         

@@ -18,5 +18,7 @@ public interface IUsuario {
     Result GetById(int IdUsuario);
     
     Result UsuarioDireccionAdd(Usuario usuario);
+    public Result imagenUpdate(String imagenConvertida, int IdUsuario);
+    
     
 }
