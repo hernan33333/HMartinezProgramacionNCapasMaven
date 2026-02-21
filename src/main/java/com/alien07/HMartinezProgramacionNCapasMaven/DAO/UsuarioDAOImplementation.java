@@ -293,7 +293,7 @@ public class UsuarioDAOImplementation implements IUsuario {
             
             try {
             
-                jdbcTemplate.execute("{CALL UsuarioImageUpdateSP(?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+                jdbcTemplate.execute("{CALL UsuarioImageUpdateSP(?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
 
                     callableStatement.setInt(1, IdUsuario);
                     callableStatement.setString(2, imagenConvertida);

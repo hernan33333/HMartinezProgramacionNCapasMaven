@@ -23,7 +23,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <div class="card-body d-flex justify-content-center align-items-center row">
                                 <div id="divImagen" class="border border-4 border-success rounded position-relative col-7" style="background-color: white">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" fill="currentColor" class="bi bi-person-fill" viewBox="0 0 16 16" th:if="${usuario.Imagen == null}">
-                                                <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
+                                    <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                                     </svg>
                                     <img id="imagenUsuario" style=" max-width: 250px; max-height: auto" class="mx-auto" th:if="${usuario.Imagen != null}" th:src="'data:image/jpeg;base64,' + ${usuario.Imagen}"/>
                                     <button class="btn btn-success position-absolute bottom-0 end-0" data-bs-toggle="modal" data-bs-target="#modalImagen">
@@ -117,11 +117,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </div>
             </div>          
         </div>
-        
+
         <div id="modalImagen" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
-                    <form action="post" th:object="${usuario}" th:action="@{/usuario/actualizarimagen/{idusuario} (idusuario = ${usuario.IdUsuario})}" enctype="multipart/form-data">
+                    <form method="post" th:object="${usuario}" th:action="@{/usuario/actualizarimagen/{idusuario} (idusuario = ${usuario.IdUsuario})}" enctype="multipart/form-data">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5">Actualizar imagen</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -130,8 +130,8 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             <div class="container-fluid">
                                 <div class="row">
                                     <div class="col-12">
-                                        <label class="form-label">Seleccione una imagen</label>
-                                        <input type="file" class="form-control" id="imagenActualizar" accept="image/*">
+                                        <label for="imagenActualizar" class="form-label">Seleccione una imagen</label>
+                                        <input type="file" class="form-control" id="imagenActualizar" name="imagenActualizar" accept="image/*">
                                         <img id="muestraImagenActualizar" style="max-width: 150px; max-height: auto" class="mx-auto"/>
                                     </div>
                                 </div>
@@ -145,11 +145,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </div>
             </div>
         </div>
-        
-        <div id="modalUsuario" class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                <div class="modal-content">
-                    <form method="post" th:object="${usuario}" th:action="@{/usuario/actualizarusuario}">
+
+        <div id="modalUsuario" class="modal modal-dialog-scrollable fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div id="divFormulario" class="modal-content">
+                    <form method="post" th:object="${usuario}" th:action="@{/usuario/actualizarusuario/{idusuario} (idusuario = ${usuario.IdUsuario})}" id="formActualizarUsuario">
                         <div class="modal-header">
                             <h1 class="modal-title fs-5">Actualizar información</h1>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -157,7 +157,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         <div class="modal-body">
                             <div class="container-fluid">
                                 <div class="row">
-                                   <div class="mb-3 col-lg-6 col-md-12">
+                                    <div class="mb-3 col-lg-6 col-md-12">
                                         <label for="Nombre" class="form-label">Nombre</label>
                                         <input type="text" class="form-control" id="NombreUsuario" placeholder="Nombre" th:field="*{Nombre}" onkeypress="SoloLetras(this, event)" onblur="SoloLetrasBlur(this)" required>
                                         <span id="errorNombreUsuario"></span>
@@ -232,7 +232,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">Actualizar</button>
+                            <button type="submit" class="btn btn-primary" id="btnActualizarUsuario">Actualizar</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
                         </div>
                     </form>
@@ -248,7 +248,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                     </div>
                     <div class="modal-body">
                         <div class="container-fluid">
-<!--                            <form method="post" th:object="${direccion}" th:action="@{/usuario/agregardireccion/{idusuario = ${usuario.IdUsuario}}}">-->
                             <form method="post" th:object="${direccion}">
                                 <div class="row">
                                     <div class="mb-3 col-lg-6 col-md-12">
@@ -318,523 +317,628 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
         </div>
     </body>
-    
-    <script>
-        
-        $(document).ready(function(){
+
+    <!--    <script>
             
-            $("#imagenActualizar").change(function(){
-            
-                if (this.files && this.files[0]) {
+            $(document).ready(function(){
                 
-                    var reader = new FileReader();
+                $("#imagenActualizar").change(function(){
+                
+                    if (this.files && this.files[0]) {
                     
-                    reader.onload = function(e){
+                        var reader = new FileReader();
                         
-                        $("#muestraImagenActualizar").attr('src', e.target.result);
+                        reader.onload = function(e){
+                            
+                            $("#muestraImagenActualizar").attr('src', e.target.result);
+                            
+                        }
+                        
+                        reader.readAsDataURL(this.files[0]);
+                    
+                    }
+            
+                });
+                
+                $("#ddlpais").change(function(){
+                    
+                    var IdPais =  $("#ddlpais").val();
+                    
+                    if (IdPais != 0) {
+                        
+                        $.ajax({
+                           
+                           url: "/usuario/getestadosbypais/" + IdPais,
+                           type: "GET",
+                           dataType: "json",
+                           success: function(data, textStatus, jqXHR){
+                               
+                               $("#ddlestado").empty();
+                               $("#ddlestado").append("<option value=0>Seleccione un estado</option>");
+                               $.each(data.objects, function(i, estado){
+                                  
+                                  $("#ddlestado").append("<option value=" + estado.IdEstado + ">" + estado.Nombre + "</option>")
+            
+                               });
+                               
+                           },
+                           error: function(jqXHR, textStatus, errorThrown){
+                               
+                               alert("No se pudo procesar la obtenci[on de los ESTADOS");
+                               
+                           }
+                            
+                        });
+                        
+                    } else {
+                        
+                        $("#ddlestado").empty();
+                        $("#ddlestado").append("<option value=0>Seleccione un pais primero</option>");
+                        
+                        $("#ddlmunicipio").empty();
+                        $("#ddlmunicipio").append("<option value=0>Seleccione un estado primero</option>");
+                        
+                        $("#ddlcolonia").empty();
+                        $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                        
+                        $("#codigopostal").empty();
+                        $("#codigopostal").val("12345");
                         
                     }
                     
-                    reader.readAsDataURL(this.files[0]);
+                });
                 
-                }
-        
-            });
-            
-            $("#ddlpais").change(function(){
-                
-                var IdPais =  $("#ddlpais").val();
-                
-                if (IdPais != 0) {
+                $("#ddlestado").change(function(){
                     
-                    $.ajax({
-                       
-                       url: "/usuario/getestadosbypais/" + IdPais,
-                       type: "GET",
-                       dataType: "json",
-                       success: function(data, textStatus, jqXHR){
-                           
-                           $("#ddlestado").empty();
-                           $("#ddlestado").append("<option value=0>Seleccione un estado</option>");
-                           $.each(data.objects, function(i, estado){
-                              
-                              $("#ddlestado").append("<option value=" + estado.IdEstado + ">" + estado.Nombre + "</option>")
+                    var IdEstado = $("#ddlestado").val();
+                    
+                    if (IdEstado != 0) {
         
-                           });
+                        $.ajax({
                            
-                       },
-                       error: function(jqXHR, textStatus, errorThrown){
-                           
-                           alert("No se pudo procesar la obtenci[on de los ESTADOS");
-                           
-                       }
+                           url: "/usuario/getmunicipiosbyestado/" + IdEstado,
+                           type: "GET",
+                           dataType: "json",
+                           success : function(data, textStatus, jqXHR){
+                               
+                               $("#ddlmunicipio").empty();
+                               $("#ddlmunicipio").append("<option value=0>Seleccione un municipio</option>");
+                               $.each(data.objects, function(i, municipio){
+                                   
+                                   $("#ddlmunicipio").append("<option value=" + municipio.IdMunicipio +">" + municipio.Nombre +"</option>");
+                                   
+                               })
+                               
+                           },
+                           error: function(jqXHR, textStatus, errorThrown){
+                               
+                               alert("No se pudo procesar la obtenci[on de los MUNICIPIOS");
+                               
+                           }
+                    
+                        });
+        
+                    } else {
                         
-                    });
+                        $("#ddlmunicipio").empty();
+                        $("#ddlmunicipio").append("<option value=0>Seleccione un estado primero</option>");
+                        
+                        $("#ddlcolonia").empty();
+                        $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                        
+                        $("#codigopostal").empty();
+                        $("#codigopostal").val("12345");
+                        
+                    }
                     
-                } else {
-                    
-                    $("#ddlestado").empty();
-                    $("#ddlestado").append("<option value=0>Seleccione un pais primero</option>");
-                    
-                    $("#ddlmunicipio").empty();
-                    $("#ddlmunicipio").append("<option value=0>Seleccione un estado primero</option>");
-                    
-                    $("#ddlcolonia").empty();
-                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
-                    
-                    $("#codigopostal").empty();
-                    $("#codigopostal").val("12345");
-                    
-                }
+                });
                 
-            });
-            
-            $("#ddlestado").change(function(){
-                
-                var IdEstado = $("#ddlestado").val();
-                
-                if (IdEstado != 0) {
-    
-                    $.ajax({
-                       
-                       url: "/usuario/getmunicipiosbyestado/" + IdEstado,
-                       type: "GET",
-                       dataType: "json",
-                       success : function(data, textStatus, jqXHR){
-                           
-                           $("#ddlmunicipio").empty();
-                           $("#ddlmunicipio").append("<option value=0>Seleccione un municipio</option>");
-                           $.each(data.objects, function(i, municipio){
-                               
-                               $("#ddlmunicipio").append("<option value=" + municipio.IdMunicipio +">" + municipio.Nombre +"</option>");
-                               
-                           })
-                           
-                       },
-                       error: function(jqXHR, textStatus, errorThrown){
-                           
-                           alert("No se pudo procesar la obtenci[on de los MUNICIPIOS");
-                           
-                       }
-                
-                    });
-    
-                } else {
+                $("#ddlmunicipio").change(function(){
                     
-                    $("#ddlmunicipio").empty();
-                    $("#ddlmunicipio").append("<option value=0>Seleccione un estado primero</option>");
+                    var IdMunicipio = $("#ddlmunicipio").val();
                     
-                    $("#ddlcolonia").empty();
-                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
-                    
-                    $("#codigopostal").empty();
-                    $("#codigopostal").val("12345");
-                    
-                }
-                
-            });
-            
-            $("#ddlmunicipio").change(function(){
-                
-                var IdMunicipio = $("#ddlmunicipio").val();
-                
-                if (IdMunicipio != 0) {
-    
-                    $.ajax({
-                       
-                       url: "/usuario/getcoloniasbymunicipio/" + IdMunicipio,
-                       type: "GET",
-                       dataType: "json",
-                       success: function(data, textStatus, jqXHR){
-                           
-                           $("#ddlcolonia").empty();
-                           $("#ddlcolonia").append("<option value=0>Seleccione una colonia</option>");
-                           $.each(data.objects, function(i, colonia){
-                               
-                              $("#ddlcolonia").append("<option value=" + colonia.IdColonia +" data-cp=" + colonia.CodigoPostal + ">" + colonia.Nombre + "</option>");
-                               
-                           });
-                           
-                       },
-                       error: function(jqXHR, textStatus, errorThrown){
-                           
-                           alert("No se pudo procesar la obtención de las COLONIAS")
-                           
-                       }
-                
-                    });
-    
-                } else {
-                    
-                    $("#ddlcolonia").empty();
-                    $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
-                    
-                    $("#codigopostal").empty();
-                    $("#codigopostal").val("12345");
-                    
-                }
-                
-            });
-            
-            $("#ddlcolonia").change(function(){
-                
-                var IdColonia = $("#ddlcolonia").val();
-                
-                if (IdColonia != 0) {
-                    
-                    $("#codigopostal").val($("#ddlcolonia option:selected").data("cp"));
-                    
-                } else {
-                    
-                    $("#codigopostal").empty();
-                    $("codigopostal").val("12345");
-                    
-                }
-                
-            });
+                    if (IdMunicipio != 0) {
         
-        });
+                        $.ajax({
+                           
+                           url: "/usuario/getcoloniasbymunicipio/" + IdMunicipio,
+                           type: "GET",
+                           dataType: "json",
+                           success: function(data, textStatus, jqXHR){
+                               
+                               $("#ddlcolonia").empty();
+                               $("#ddlcolonia").append("<option value=0>Seleccione una colonia</option>");
+                               $.each(data.objects, function(i, colonia){
+                                   
+                                  $("#ddlcolonia").append("<option value=" + colonia.IdColonia +" data-cp=" + colonia.CodigoPostal + ">" + colonia.Nombre + "</option>");
+                                   
+                               });
+                               
+                           },
+                           error: function(jqXHR, textStatus, errorThrown){
+                               
+                               alert("No se pudo procesar la obtención de las COLONIAS")
+                               
+                           }
+                    
+                        });
         
-        function SoloLetras(input, event){
+                    } else {
+                        
+                        $("#ddlcolonia").empty();
+                        $("#ddlcolonia").append("<option value=0>Seleccione un municipio primero</option>");
+                        
+                        $("#codigopostal").empty();
+                        $("#codigopostal").val("12345");
+                        
+                    }
+                    
+                });
+                
+                $("#ddlcolonia").change(function(){
+                    
+                    var IdColonia = $("#ddlcolonia").val();
+                    
+                    if (IdColonia != 0) {
+                        
+                        $("#codigopostal").val($("#ddlcolonia option:selected").data("cp"));
+                        
+                    } else {
+                        
+                        $("#codigopostal").empty();
+                        $("codigopostal").val("12345");
+                        
+                    }
+                    
+                });
             
-            var valorCompleto = $(input).val() + event.key;
-            console.log(valorCompleto);
+            });
             
-            var regex = /^[a-zA-Z áéíóú]+$/;
-            
-            if (valorCompleto.length > 50) {
+            function SoloLetras(input, event){
                 
-                console.log("No paso la regex");
-                event.preventDefault();
-                $(input).addClass('border border-danger');
-                $('#error' + input.id + '').text('Máximo 50 carácteres').css('color', 'red');
+                var valorCompleto = $(input).val() + event.key;
+                console.log(valorCompleto);
                 
-            } else {
+                var regex = /^[a-zA-Z áéíóú]+$/;
                 
-                if (regex.test(valorCompleto)) {
-                
-                    console.log("Paso la regex");
-                    $('#error' + input.id + '').text('');
-                    $(input).removeClass('border border-danger');
-
-                } else {
-
+                if (valorCompleto.length > 50) {
+                    
                     console.log("No paso la regex");
                     event.preventDefault();
                     $(input).addClass('border border-danger');
-                    $('#error' + input.id + '').text('Solo letras').css('color', 'red');
-
+                    $('#error' + input.id + '').text('Máximo 50 carácteres').css('color', 'red');
+                    
+                } else {
+                    
+                    if (regex.test(valorCompleto)) {
+                    
+                        console.log("Paso la regex");
+                        $('#error' + input.id + '').text('');
+                        $(input).removeClass('border border-danger');
+    
+                    } else {
+    
+                        console.log("No paso la regex");
+                        event.preventDefault();
+                        $(input).addClass('border border-danger');
+                        $('#error' + input.id + '').text('Solo letras').css('color', 'red');
+    
+                    }
+                    
                 }
                 
             }
             
-        }
+            function SoloLetrasBlur(input){
+                
+                var regex = /^[a-zA-Z áéíóú]{1,50}$/;
+                
+                if (regex.test($(input).val())) {
         
-        function SoloLetrasBlur(input){
-            
-            var regex = /^[a-zA-Z áéíóú]{1,50}$/;
-            
-            if (regex.test($(input).val())) {
-    
-                $('#error' + input.id + '').text('');
-                $(input).removeClass('border border-danger');
-                $(input).addClass('border border-success');
-    
-            }
-            
-        }
-        
-        function SoloNumeros(input, event){
-            
-            var valorCompleto = $(input).val() + event.key;
-            console.log(valorCompleto);
-            
-            var regex = /^[\d]+$/;
-            
-            if (valorCompleto.length > 10) {
-                
-                event.preventDefault();
-                $(input).addClass('border border-danger');
-                $('#error' + input.id + '').text('Máximo 10 dígitos').css('color', 'red');
-    
-            } else {
-                
-                if (regex.test(valorCompleto)) {
-                
-                    console.log("Si paso la regex");
                     $('#error' + input.id + '').text('');
                     $(input).removeClass('border border-danger');
-
-                } else {
-
-                    console.log("No paso la regex");
-                    event.preventDefault();
-                    $(input).addClass('border border-danger');
-                    $('#error' + input.id + '').text('Solo numeros').css('color', 'red');
-
+                    $(input).addClass('border border-success');
+        
                 }
                 
             }
             
-        }
-        
-        function SoloNumerosBlur(input){
-            
-            var regex = /^[\d]{1,10}$/;
-            
-            if (regex.test($(input).val())) {
+            function SoloNumeros(input, event){
                 
-                $('#error' + input.id + '').text('');
-                $(input).removeClass('border border-danger');
-                $(input).addClass('border border-success');
+                var valorCompleto = $(input).val() + event.key;
+                console.log(valorCompleto);
+                
+                var regex = /^[\d]+$/;
+                
+                if (valorCompleto.length > 10) {
+                    
+                    event.preventDefault();
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Máximo 10 dígitos').css('color', 'red');
+        
+                } else {
+                    
+                    if (regex.test(valorCompleto)) {
+                    
+                        console.log("Si paso la regex");
+                        $('#error' + input.id + '').text('');
+                        $(input).removeClass('border border-danger');
+    
+                    } else {
+    
+                        console.log("No paso la regex");
+                        event.preventDefault();
+                        $(input).addClass('border border-danger');
+                        $('#error' + input.id + '').text('Solo numeros').css('color', 'red');
+    
+                    }
+                    
+                }
                 
             }
             
-        }
-        
-        function LetrasYNumeros(input, event){
-            
-            var valorCompleto = $(input).val() + event.key;
-            
-            var regex = /^[a-zA-Z\d]+$/;
-            
-            if (valorCompleto.length > 20) {
+            function SoloNumerosBlur(input){
                 
-                event.preventDefault();
-                $(input).addClass('border border-danger');
-                $('#error' + input.id +'').text('No mayor a 20 carácteres').css('color', 'red');
+                var regex = /^[\d]{1,10}$/;
                 
-            } else {
-                
-                if (regex.test(valorCompleto)) {
+                if (regex.test($(input).val())) {
                     
                     $('#error' + input.id + '').text('');
                     $(input).removeClass('border border-danger');
-
-                } else {
-
+                    $(input).addClass('border border-success');
+                    
+                }
+                
+            }
+            
+            function LetrasYNumeros(input, event){
+                
+                var valorCompleto = $(input).val() + event.key;
+                
+                var regex = /^[a-zA-Z\d]+$/;
+                
+                if (valorCompleto.length > 20) {
+                    
                     event.preventDefault();
                     $(input).addClass('border border-danger');
-                    $('#error' + input.id + '').text('Sólo letras y números').css('color', 'red');
-
-                }
-                
-            }
-            
-        }
-        
-        function LetrasYNumerosBlur(input){
-            
-            var regex = /^[a-zA-Z\d]{1,20}$/;
-            
-            if (regex.test($(input).val())) {
-                
-                $('#error' + input.id + '').text('');
-                $(input).removeClass('border border-danger');
-                $(input).addClass('border border-success');
-                
-            }
-            
-        }
-        
-        function Correo(input, event){
-            
-            var valorCompleto = $(input).val() + event.key;
-            
-            if (valorCompleto.length > 254) {
-                
-                event.preventDefault();
-                $(input).addClass('border border-danger');
-                $('#error' + input.id + '').text('Demasiados carácteres').css('color', 'red');
-                
-            }
-            
-            
-        }
-        
-        function CorreoBlur(input){
-            
-            console.log($(input).val());
-            var regex = /^[a-zA-Z\d\.]+@[a-z]+\.com$/;
-            
-            if (regex.test($(input).val())) {
-                
-                console.log("Si paso la prueba");
-                $('#error' + input.id + '').text('');
-                $(input).removeClass('border border-danger');
-                $(input).addClass('border border-success');
-                
-            } else {
-                
-                $('#error' + input.id + '').text('Email inválido').css('color', 'red');
-                $(input).removeClass('border border-success');
-                $(input).addClass('border border-danger');
-                
-            }
-            
-        }
-        
-        function PasswordValidacion(input, event){
-            
-            var valorCompleto = $(input).val() + event.key;
-            
-            console.log(valorCompleto);
-            
-            var regex = /^[a-zA-Z\d`~!@#$%^&\.\*()-_]+$/;
-            
-            if (valorCompleto.length < 8 || valorCompleto.length > 16) {
-                
-               $(input).addClass('border border-danger');
-               $('#error' + input.id + '').text('La contraseña debe de ser de 8 - 16 carácteres').css('color', 'red');
-    
-            } else {
-                
-                if (regex.test(valorCompleto)) {
-                
-                    console.log("Si paso la validacion");
-                    $('#error' + input.id + '').text('');
-                    $(input).removeClass('border border-danger');
-
-                } else {
-
-                    console.log("No paso la validacion");
-                    event.preventDefault();
-                    $('#error' + input.id + '').text('La contraseña debe contener al menos 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial');
-
-                }
-                
-            }
-        }
-        
-        function PasswordBlur(input){
-            
-            var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\.\*()_])[a-zA-Z\d`~!@#$%^&\.\*()_]{8,16}$/;
-            
-            if (regex.test($(input).val())) {
-                
-                $(input).removeClass('border border-danger');
-                $(input).addClass('border border-success');
-                $('#error' + input.id + '').text('');
-                
-            } else {
-                
-                $(input).removeClass('border border-success');
-                $(input).addClass('border border-danger');
-                $('#error' + input.id + '').text('Contraseña inválida').css('color', 'red');
-                
-            }
-            
-        }
-        
-        function FechaBlur(input){
-            
-            var fecha = new Date($(input).val());
-            var fechaHoy = new Date(Date.now());
-            
-            var fechaResultante = fechaHoy.getTime() - fecha.getTime();
-            
-            fechaResultante = fechaResultante /( 1000 * 60 * 60 * 24);
-            
-            var mes = fecha.getMonth() + 1;
-            var dia = fecha.getUTCDate();
-            
-            if (mes < 1 || mes  > 12 || dia < 1 || dia > 31) {
-            
-                $(input).removeClass('border border-success');
-                $(input).addClass('border border-danger');
-                $('#error' + input.id + '').text('Ingrese una fecha válida').css('color', 'red');
-                
-            } else if (fechaResultante < 6570) {
-                
-                $(input).removeClass('border border-success');
-                $(input).addClass('border border-danger');
-                $('#error' + input.id + '').text('No es mayor de edad').css('color', 'red');
-    
-            } else{
-                
-                $(input).removeClass('border border-danger');
-                $(input).addClass('border border-success');
-                $('#error' + input.id + '').text('');
-                
-            }
-            
-        }
-        
-        function ConfirmarEliminacion(IdDireccion){
-            
-            Swal.fire({
-                title: "¿Está seguro que quiere eliminar la dirección?",
-                text: "No se podrán revertir los cambios",
-                icon: "warning",
-                showCancelButton: true,
-                confirmButtonColor: "#3085d6",
-                cancelButtonColor: "#d33",
-                cancelButtonText: "No, cancelar",
-                confirmButtonText: "Sí, eliminar"
-              }).then((result) => {
-                  
-                if (result.isConfirmed) {
+                    $('#error' + input.id +'').text('No mayor a 20 carácteres').css('color', 'red');
                     
-                    Swal.fire({
-                        title: 'Eliminando...',
-                        text: 'Por favor, espere',
-                        allowOutsideClick: false,
-                        didOpen: () => {
-                            Swal.showLoading();
-                        }
-                    });
-                
-                    $.ajax({
+                } else {
+                    
+                    if (regex.test(valorCompleto)) {
                         
-                        url:"/usuario/eliminarDireccion/" + IdDireccion,
-                        type:"DELETE",
-                        dataType:"json",
-                        success: function(data){
+                        $('#error' + input.id + '').text('');
+                        $(input).removeClass('border border-danger');
+    
+                    } else {
+    
+                        event.preventDefault();
+                        $(input).addClass('border border-danger');
+                        $('#error' + input.id + '').text('Sólo letras y números').css('color', 'red');
+    
+                    }
+                    
+                }
+                
+            }
+            
+            function LetrasYNumerosBlur(input){
+                
+                var regex = /^[a-zA-Z\d]{1,20}$/;
+                
+                if (regex.test($(input).val())) {
+                    
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+                    $(input).addClass('border border-success');
+                    
+                }
+                
+            }
+            
+            function Correo(input, event){
+                
+                var valorCompleto = $(input).val() + event.key;
+                
+                if (valorCompleto.length > 254) {
+                    
+                    event.preventDefault();
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Demasiados carácteres').css('color', 'red');
+                    
+                }
+                
+                
+            }
+            
+            function CorreoBlur(input){
+                
+                console.log($(input).val());
+                var regex = /^[a-zA-Z\d\.]+@[a-z]+\.com$/;
+                
+                if (regex.test($(input).val())) {
+                    
+                    console.log("Si paso la prueba");
+                    $('#error' + input.id + '').text('');
+                    $(input).removeClass('border border-danger');
+                    $(input).addClass('border border-success');
+                    
+                } else {
+                    
+                    $('#error' + input.id + '').text('Email inválido').css('color', 'red');
+                    $(input).removeClass('border border-success');
+                    $(input).addClass('border border-danger');
+                    
+                }
+                
+            }
+            
+            function PasswordValidacion(input, event){
+                
+                var valorCompleto = $(input).val() + event.key;
+                
+                console.log(valorCompleto);
+                
+                var regex = /^[a-zA-Z\d`~!@#$%^&\.\*()-_]+$/;
+                
+                if (valorCompleto.length < 8 || valorCompleto.length > 16) {
+                    
+                   $(input).addClass('border border-danger');
+                   $('#error' + input.id + '').text('La contraseña debe de ser de 8 - 16 carácteres').css('color', 'red');
+        
+                } else {
+                    
+                    if (regex.test(valorCompleto)) {
+                    
+                        console.log("Si paso la validacion");
+                        $('#error' + input.id + '').text('');
+                        $(input).removeClass('border border-danger');
+    
+                    } else {
+    
+                        console.log("No paso la validacion");
+                        event.preventDefault();
+                        $('#error' + input.id + '').text('La contraseña debe contener al menos 1 mayúscula, 1 minúscula, 1 número y 1 carácter especial');
+    
+                    }
+                    
+                }
+            }
+            
+            function PasswordBlur(input){
+                
+                var regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\.\*()_])[a-zA-Z\d`~!@#$%^&\.\*()_]{8,16}$/;
+                
+                if (regex.test($(input).val())) {
+                    
+                    $(input).removeClass('border border-danger');
+                    $(input).addClass('border border-success');
+                    $('#error' + input.id + '').text('');
+                    
+                } else {
+                    
+                    $(input).removeClass('border border-success');
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Contraseña inválida').css('color', 'red');
+                    
+                }
+                
+            }
+            
+            function FechaBlur(input){
+                
+                var fecha = new Date($(input).val());
+                var fechaHoy = new Date(Date.now());
+                
+                var fechaResultante = fechaHoy.getTime() - fecha.getTime();
+                
+                fechaResultante = fechaResultante /( 1000 * 60 * 60 * 24);
+                
+                var mes = fecha.getMonth() + 1;
+                var dia = fecha.getUTCDate();
+                
+                if (mes < 1 || mes  > 12 || dia < 1 || dia > 31) {
+                
+                    $(input).removeClass('border border-success');
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('Ingrese una fecha válida').css('color', 'red');
+                    
+                } else if (fechaResultante < 6570) {
+                    
+                    $(input).removeClass('border border-success');
+                    $(input).addClass('border border-danger');
+                    $('#error' + input.id + '').text('No es mayor de edad').css('color', 'red');
+        
+                } else{
+                    
+                    $(input).removeClass('border border-danger');
+                    $(input).addClass('border border-success');
+                    $('#error' + input.id + '').text('');
+                    
+                }
+                
+            }
+            
+            function ConfirmarEliminacion(IdDireccion){
+                
+                Swal.fire({
+                    title: "¿Está seguro que quiere eliminar la dirección?",
+                    text: "No se podrán revertir los cambios",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#3085d6",
+                    cancelButtonColor: "#d33",
+                    cancelButtonText: "No, cancelar",
+                    confirmButtonText: "Sí, eliminar"
+                  }).then((result) => {
+                      
+                    if (result.isConfirmed) {
+                        
+                        Swal.fire({
+                            title: 'Eliminando...',
+                            text: 'Por favor, espere',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+                    
+                        $.ajax({
                             
-                            if (data.correct) {
+                            url:"/usuario/eliminarDireccion/" + IdDireccion,
+                            type:"DELETE",
+                            dataType:"json",
+                            success: function(data){
                                 
-                                Swal.fire({
-                                    title: "¡Dirección eliminada!",
-                                    text: "Se eliminó correctamente la dirección del usuario.",
-                                    icon: "success",
-                                    didClose: () => {
-                                        location.reload(true);
-                                    }
-                                });
-                                
-                            } else {
+                                if (data.correct) {
+                                    
+                                    Swal.fire({
+                                        title: "¡Dirección eliminada!",
+                                        text: "Se eliminó correctamente la dirección del usuario.",
+                                        icon: "success",
+                                        didClose: () => {
+                                            location.reload(true);
+                                        }
+                                    });
+                                    
+                                } else {
+                                    
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "¡Algo salió mal!",
+                                        text: "No se pudo eliminar la dirección.",
+                                        didClose: () => {
+                                            location.reload(true);
+                                        }
+                                    });
+                                    
+                                }
+                            },
+                            error: function(){
                                 
                                 Swal.fire({
                                     icon: "error",
                                     title: "¡Algo salió mal!",
-                                    text: "No se pudo eliminar la dirección.",
+                                    text: "Hubo un problema al intentar conectar con el servidor.",
                                     didClose: () => {
                                         location.reload(true);
                                     }
                                 });
                                 
                             }
-                        },
-                        error: function(){
                             
-                            Swal.fire({
-                                icon: "error",
-                                title: "¡Algo salió mal!",
-                                text: "Hubo un problema al intentar conectar con el servidor.",
-                                didClose: () => {
-                                    location.reload(true);
-                                }
-                            });
-                            
-                        }
-                        
-                    });
-                }
+                        });
+                    }
+                    
+                });
                 
-            });
+            }
             
+        </script>-->
+
+    <script th:if="${errorMessageImagen}" th:inline="javascript">
+        
+        Swal.fire({
+        icon: "error",
+                title: "Algo salió mal",
+                text: [[${errorMessageImagen}]],
+                footer: 
+                '<a href="#errorAgregar" data-bs-toggle="collapse" aria-expanded="false" aria-controls="errorAgregar" role="button">¿Por qué sucedió esto?</a>\n\
+            <div class="collapse" id="errorAgregar">\n\
+                <div class="card card-body">\n\
+                    ¿Está enviando un archivo de imagen válido?\n\
+                </div>\n\
+            </div>'
+        });
+    </script>
+
+    <script th:if="${errorMessageServidor}" th:inline="javascript">
+        
+        Swal.fire({
+        icon: "error",
+                title: "Algo salió mal",
+                text: [[${errorMessageServidor}]],
+                footer: 
+                '<a href="#errorAgregar" data-bs-toggle="collapse" aria-expanded="false" aria-controls="errorAgregar" role="button">¿Por qué sucedió esto?</a>\n\
+            <div class="collapse" id="errorAgregar">\n\
+                <div class="card card-body">\n\
+                    Hubo un problema desde el servidor. Inténtelo más tarde.\n\
+                </div>\n\
+            </div>'
+        });
+    </script>
+
+    <script th:if="${successMessage}" th:inline="javascript">
+        
+        Swal.fire({
+        title: "¡Imágen actualizada correctamente!",
+                icon: "success",
+                draggable: true
+        });
+    </script>
+
+    <script>
+        
+        function enviarFormulario(IdUsuario, event){
+        
+        event.preventDefault();
+        var formulario = $("#formActualizarUsuario");
+        $.ajax({
+        
+        url:"/usuario/actualizarusuario/" + IdUsuario,
+                type:"post",
+                dataType:"json",
+                data: formulario.serialize(),
+                success: function(data){
+                
+                if (data.correct) {
+                    window.location.href = "/usuario/getbyid/5";
+                } else {
+                    console.log("Error");
+                }
+                console.log(data);
+                
+                },
+                error: function(errorThrown, textStatus){
+                
+                Swal.fire({
+                icon: "error",
+                        title: "Algo salió mal",
+                        text: "Hubo un problema al contactar al servidor",
+                        footer: 
+                        '<a href="#errorAgregar" data-bs-toggle="collapse" aria-expanded="false" aria-controls="errorAgregar" role="button">¿Por qué sucedió esto?</a>\n\
+                        <div class="collapse" id="errorAgregar">\n\
+                            <div class="card card-body">\n\
+                                Hubo un problema para conectar con el servidor. Inténtelo más tarde.\n\
+                            </div>\n\
+                        </div>'
+                });
+                }
+        
+        });
         }
         
     </script>
+
+    <script th:if="${successMessageUsuarioUpdate}" th:inline="javascript">
+        
+        Swal.fire({
+        title: "Usuario actualizado correctamente",
+                text: [[${successMessageUsuarioUpdate}]],
+                icon: "success",
+                draggable: true
+        });
+        
+    </script>
     
+    <script th:if="${modalOpen}" th:inline="javascript">
+        
+        $(document).ready(function(){
+           
+           $("#modalUsuario").modal("show");
+        
+        });
+        
+    </script>
+
 </html>

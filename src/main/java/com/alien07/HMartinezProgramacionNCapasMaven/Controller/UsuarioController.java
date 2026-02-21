@@ -39,7 +39,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 @RequestMapping("usuario")
 public class UsuarioController {
-    
+
     @Autowired
     private UsuarioDAOImplementation usuarioDAOImplementation;
     @Autowired
@@ -54,239 +54,262 @@ public class UsuarioController {
     private MunicipioDAOImplementation municipioDAOImplementation;
     @Autowired
     private ColoniaDAOImplementation coloniaDAOImplementation;
-    
+
     @GetMapping()// localhost:8080/usuario
-    public String Index(Model model){
-        
+    public String Index(Model model) {
+
         Result result = usuarioDAOImplementation.GetAll();
-        
+
         model.addAttribute("usuarios", result.objects);
-        
+
         return "Usuario";
-    
+
     }
-   
-   @PostMapping("agregardireccion/{idusuario}")
-   public String AgregarDireccion(@Valid @ModelAttribute("direccion") Direccion direccion, BindingResult bindingResult, Model model){
-   
-       if (bindingResult.hasErrors()) {
-           
-       }
-       
-       return "";
-       
-   }
-    
+
+    @PostMapping("agregardireccion/{idusuario}")
+    public String AgregarDireccion(@Valid @ModelAttribute("direccion") Direccion direccion, BindingResult bindingResult, Model model) {
+
+        if (bindingResult.hasErrors()) {
+
+        }
+
+        return "";
+
+    }
+
     @GetMapping("getbyid/{idusuario}")
-    public String GetById(@PathVariable("idusuario") int IdUsuario, Model model){
-    
+    public String GetById(@PathVariable("idusuario") int IdUsuario, Model model) {
+
         Result resultUsuario = usuarioDAOImplementation.GetById(IdUsuario);
-        
+
         model.addAttribute("usuario", resultUsuario.object);
-        
+
         model.addAttribute("direccion", new Direccion());
-        
+
         Result resultPais = paisDAOImplementation.GetAll();
         model.addAttribute("paises", resultPais.objects);
-        
+
         Result resultRol = rolDAOImplementation.GetAll();
         model.addAttribute("roles", resultRol.objects);
-        
+
         return "UsuarioDetail";
-    
+
     }
-    
+
     @GetMapping("formulario") // localhost:8080/usuario/formulario
-    public String Formulario(Model model){
-    
+    public String Formulario(Model model) {
+
         Usuario usuario = new Usuario();
         model.addAttribute("usuario", usuario);
-        
+
         Result resultPais = paisDAOImplementation.GetAll();
         model.addAttribute("paises", resultPais.objects);
-        
+
         Result resultRol = rolDAOImplementation.GetAll();
         model.addAttribute("roles", resultRol.objects);
-        
+
         return "formulario";
     }
-    
+
     @DeleteMapping("eliminarDireccion/{IdDireccion}")
     @ResponseBody
-    public Result EliminarDireccion(@PathVariable("IdDireccion") int IdDireccion){
-    
+    public Result EliminarDireccion(@PathVariable("IdDireccion") int IdDireccion) {
+
         Result direccion = direccionDAOImplementation.GetById(IdDireccion);
         Result resultEliminacion = new Result();
-        
+
         if (direccion.correct) {
-            
-            resultEliminacion  = direccionDAOImplementation.DireccionDelete(IdDireccion);
-            
+
+            resultEliminacion = direccionDAOImplementation.DireccionDelete(IdDireccion);
+
         } else {
-        
+
             resultEliminacion.correct = false;
-        
+
         }
-        
+
         return resultEliminacion;
-    
+
     }
-    
+
     @DeleteMapping("eliminarusuario/{IdUsuario}")
     @ResponseBody
-    public Result EliminarUsuario(@PathVariable("IdUsuario") int IdUsuario){
-        
+    public Result EliminarUsuario(@PathVariable("IdUsuario") int IdUsuario) {
+
         Result usuario = usuarioDAOImplementation.GetById(IdUsuario);
         Result resultEliminacion = new Result();
-        
+
         if (usuario.correct) {
-            
+
             resultEliminacion = usuarioDAOImplementation.DeleteById(IdUsuario);
-            
+
         } else {
-        
+
             resultEliminacion.correct = false;
-        
+
         }
-        
+
         return resultEliminacion;
-    
+
     }
-    
-    @PostMapping("actualizarusuario")
-    public String ActualizarUsuario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, Model model){
-    
+
+    @PostMapping("actualizarusuario/{IdUsuario}")
+    public String ActualizarUsuario(@PathVariable("IdUsuario") int IdUsuario, @Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes) {
+        
         if (bindingResult.hasErrors()) {
             
-            model.addAttribute("usuario", usuario);
-            model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
-            model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
-            
+            Result resultUsuario = usuarioDAOImplementation.GetById(IdUsuario);
+
+            model.addAttribute("usuario", resultUsuario.object);
+
+            model.addAttribute("direccion", new Direccion());
+
+            Result resultPais = paisDAOImplementation.GetAll();
+            model.addAttribute("paises", resultPais.objects);
+
+            Result resultRol = rolDAOImplementation.GetAll();
+            model.addAttribute("roles", resultRol.objects);
+            model.addAttribute("modalOpen", true);
             
             return "UsuarioDetail";
         }
+
         
-        return "usuario";
+        //Hacer agreagacion
+                
+        redirectAttributes.addFlashAttribute("successMessageUsuarioUpdate", "¡Se actualizó correctamente al usuario!");
+
+        return "redirect:/usuario/getbyid/" + IdUsuario;
+        
     
     }
-    
+
     @PostMapping("actualizarimagen/{IdUsuario}")
-    public String ActualizarImagen(@PathVariable("IdUsuario") int IdUsuario, @RequestParam("imagenFile") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException{
-    
+    public String ActualizarImagen(@PathVariable("IdUsuario") int IdUsuario, @RequestParam("imagenActualizar") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException {
+
         Boolean esImagenValida = verificarImagen(imagen);
         Result resultImagen = new Result();
-        
+
         if (esImagenValida) {
-            
+
             String imagenConvertida = Base64.getEncoder().encodeToString(imagen.getBytes());
             resultImagen = usuarioDAOImplementation.imagenUpdate(imagenConvertida, IdUsuario);
-            
-            redirectAttributes.addFlashAttribute("successMessage", "¡Se actualizó la imagen con éxito!");
-            return "redirect:/UsuarioDetail";
-            
+
+            if (resultImagen.correct) {
+
+                redirectAttributes.addFlashAttribute("successMessage", "¡Se actualizó la imagen con éxito!");
+                return "redirect:/usuario/getbyid/" + IdUsuario;
+
+            } else {
+
+                redirectAttributes.addFlashAttribute("errorMessageServidor", "¡Hubo un error en el servidor al intentar actualizar la imagen!");
+                return "redirect:/usuario/getbyid/" + IdUsuario;
+
+            }
+
         } else {
-        
+
             resultImagen.correct = false;
-            redirectAttributes.addFlashAttribute("errorMessage", "¡Hubo un error al intentar actualziar la imagen!");
-            return "redirect:/UsuarioDetail";
-            
+            redirectAttributes.addFlashAttribute("errorMessageImagen", "¡Hubo un error al intentar procesar la imagen!");
+            return "redirect:/usuario/getbyid/" + IdUsuario;
+
         }
-    
+
     }
-    
+
     @PostMapping("formulario")
-    public String Formulario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, @RequestParam("imagenFile") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException{
-        
+    public String Formulario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, @RequestParam("imagenFile") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException {
+
         if (bindingResult.hasErrors()) {
-            
+
             agregarValoresModel(model, usuario);
-            
+
             return "formulario";
-            
+
         }
-        
+
         Boolean esImagenValida = verificarImagen(imagen);
-        
+
         if (esImagenValida) {
-            
+
             String imagenConvertida = Base64.getEncoder().encodeToString(imagen.getBytes());
             usuario.setImagen(imagenConvertida);
-            
+
         }
-        
+
         Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
-        
+
         if (result.correct) {
-            
+
             redirectAttributes.addFlashAttribute("successMessage", "Se agregó correctamente el usuario.");
             return "redirect:/usuario";
-            
+
         } else {
-        
+
             model.addAttribute("errorMessage", "Hubo un error al intentar registrar al usuario: " + result.errorMessage);
-            
+
             agregarValoresModel(model, usuario);
-            
+
             return "formulario";
-            
+
         }
-    
+
     }
-    
+
     @GetMapping("getestadosbypais/{IdPais}")
     @ResponseBody
-    public Result GetEstadoByPais(@PathVariable("IdPais") int IdPais){
-    
+    public Result GetEstadoByPais(@PathVariable("IdPais") int IdPais) {
+
         Result resultPais = estadoDAOImplementation.GetByPais(IdPais);
-        
+
         return resultPais;
-        
+
     }
-    
+
     @GetMapping("getmunicipiosbyestado/{IdEstado}")
     @ResponseBody
-    public Result GetMunicipiosByEstado(@PathVariable("IdEstado") int IdEstado){
-        
+    public Result GetMunicipiosByEstado(@PathVariable("IdEstado") int IdEstado) {
+
         Result result = municipioDAOImplementation.GetByEstado(IdEstado);
-        
+
         return result;
-    
+
     }
-    
+
     @GetMapping("getcoloniasbymunicipio/{IdMunicipio}")
     @ResponseBody
-    public Result GetColoniadByMunicipio(@PathVariable("IdMunicipio") int IdMunicipio){
-        
+    public Result GetColoniadByMunicipio(@PathVariable("IdMunicipio") int IdMunicipio) {
+
         Result result = coloniaDAOImplementation.GetByMunicipio(IdMunicipio);
-        
+
         return result;
-    
+
     }
-    
-    public Boolean verificarImagen(MultipartFile imagen){
-        
+
+    public Boolean verificarImagen(MultipartFile imagen) {
+
         if (imagen != null) {
-                
+
             String nombreImagen = imagen.getOriginalFilename();
-            
+
             if (nombreImagen == null || nombreImagen.trim().isEmpty()) {
-                
+
                 return false;
-                
+
             }
-            
+
             int ultimoIndice = nombreImagen.lastIndexOf('.');
-            
+
             if (ultimoIndice <= 0 || ultimoIndice == nombreImagen.length() - 1) {
-                
+
                 return false;
-                
+
             }
-            
+
             String extension = nombreImagen.substring(ultimoIndice + 1).toLowerCase();
 
             if (extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")) {
-                
+
                 return true;
 
             } else {
@@ -296,15 +319,15 @@ public class UsuarioController {
             }
 
         } else {
-        
+
             return false;
-        
+
         }
-        
+
     }
-    
-    public void agregarValoresModel(Model model, Usuario usuario){
-        
+
+    public void agregarValoresModel(Model model, Usuario usuario) {
+
         model.addAttribute("usuario", usuario);
         model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
         model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
@@ -332,7 +355,7 @@ public class UsuarioController {
             }
 
         }
-    
+
     }
-    
+
 }
