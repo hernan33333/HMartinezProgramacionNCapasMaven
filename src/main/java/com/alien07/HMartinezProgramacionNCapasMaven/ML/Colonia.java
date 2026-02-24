@@ -6,7 +6,9 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Municipio;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 /**
  *
@@ -15,6 +17,8 @@ import jakarta.validation.constraints.NotNull;
 public class Colonia {
     
     @NotNull(message = "Debe de elegir una colonia")
+    @Positive(message = "Colonia no válida")
+    @Min(value = 1, message = "Debe de elegir una colonia")
     private int IdColonia;
     
     private String Nombre;

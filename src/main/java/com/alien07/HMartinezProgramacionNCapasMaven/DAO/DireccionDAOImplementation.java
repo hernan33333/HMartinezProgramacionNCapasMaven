@@ -91,7 +91,45 @@ public class DireccionDAOImplementation implements IDireccion {
 
     @Override
     public Result DireccionAdd(Direccion direccion, int IdUsuario) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        
+        Result resultDireccion = new Result();
+        
+        try {
+            
+            jdbcTemplate.execute("{CALL DireccionAddSP(?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+            
+                callableStatement.setString(1, direccion.getCalle());
+                callableStatement.setString(2, direccion.getNumeroInterior());
+                callableStatement.setString(3, direccion.getNumeroExterior());
+                callableStatement.setInt(4, direccion.Colonia.getIdColonia());
+                callableStatement.setInt(5, IdUsuario);
+                
+                int resultadoAgregacion = callableStatement.executeUpdate();
+                
+                if (resultadoAgregacion == 1) {
+                    
+                    resultDireccion.correct = true;
+                    
+                } else {
+                
+                    resultDireccion.correct = false;
+                
+                }
+                
+                return true;
+            
+            });
+            
+        } catch (Exception ex) {
+        
+            resultDireccion.correct = true;
+            resultDireccion.ex = ex;
+            resultDireccion.errorMessage = ex.getLocalizedMessage();
+            
+        }
+        
+        return resultDireccion;
+        
     }
 
     @Override

@@ -46,7 +46,7 @@ public class Usuario {
     @Size(min = 3, max = 50, message = "Debe de contener más de 2 letras y menos de 50")
     private String UserName;
     
-    @Pattern(regexp = "[a-zA-Z\\d\\.]+@[a-z]+\\.com", message = "El correo es inválido")
+    @Pattern(regexp = "[a-zA-Z\\d\\._]+@[a-z]+\\.com", message = "El correo es inválido")
     @NotEmpty(message = "Debe de escribir un email")
     @Size(max = 254, message = "Email demasiado largo")
     private String Email;

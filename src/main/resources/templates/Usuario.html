@@ -15,14 +15,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body>
-        
-        <header class="position-sticky">
-            
-            <div class="position-relative">
-                <h1 class="position-absolute top-100 start-50 translate-middle mt-1">GetAll</h1>
+        <nav class="navbar bg-body-tertiary">
+            <div class="container-fluid">
+                <a class="navbar-brand">Usuarios</a>
+                <form class="d-flex" method="post" role="search" th:object="${usuario}" th:action="@{/usuario/searchusuarios}">
+                    <input class="form-control me-2" th:name="Nombre" type="search" placeholder="Nombre..." aria-label="Search">
+                    <input class="form-control me-2" th:name="ApellidoPaterno" type="search" placeholder="Apellido paterno..." aria-label="Search">
+                    <input class="form-control me-2" th:name="ApellidoMaterno" type="search" placeholder="Apellido materno..." aria-label="Search">
+                    <select class="form-select">
+                        <option value="0">Seleccione un rol...</option>
+                        <option th:each="rol : ${roles}" th:value="${rol.IdRol}" th:text="${rol.Nombre}"></option>
+                    </select>
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </form>
             </div>
-            
-        </header>
+        </nav>
         
         <div id="body" class="container position-relative">
             

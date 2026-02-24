@@ -244,8 +244,9 @@ public class UsuarioDAOImplementation implements IUsuario {
         return result;
 
     }
-
-    public Result DeleteById(int IdUsuaurio) {
+    
+    @Override
+    public Result Delete(int IdUsuario) {
         
         Result result = new Result();
         
@@ -253,7 +254,7 @@ public class UsuarioDAOImplementation implements IUsuario {
             
             jdbcTemplate.execute("{CALL UsuarioDeleteSP(?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
                 
-                callableStatement.setInt(1, IdUsuaurio);
+                callableStatement.setInt(1, IdUsuario);
                 
                 int resultadoEliminacion = callableStatement.executeUpdate();
                 
@@ -283,7 +284,8 @@ public class UsuarioDAOImplementation implements IUsuario {
         return result;
         
     }
-
+    
+    @Override
     public Result imagenUpdate(String imagenConvertida, int IdUsuario) {
         
         Result resultUsuario = GetById(IdUsuario);
@@ -329,6 +331,90 @@ public class UsuarioDAOImplementation implements IUsuario {
         }
         
         return resultImagen;
+        
+    }
+
+    @Override
+    public Result Update(Usuario usuario) {
+       
+        Result resultUpdate = new Result();
+        
+        try {
+            
+            jdbcTemplate.execute("{CALL UsuarioUpdateSP(?,?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+                
+                callableStatement.setInt(1, usuario.getIdUsuario());
+                callableStatement.setString(2, usuario.getNombre());
+                callableStatement.setString(3, usuario.getApellidoPaterno());
+                callableStatement.setDate(4, new Date(usuario.getFechaNacimiento().getTime()));
+                callableStatement.setString(5, usuario.getUserName());
+                callableStatement.setString(6, usuario.getApellidoMaterno());
+                callableStatement.setString(7, usuario.getEmail());
+                callableStatement.setString(8, usuario.getPassword());
+                callableStatement.setString(9, usuario.getSexo());
+                callableStatement.setString(10, usuario.getTelefono());
+                callableStatement.setInt(11, usuario.Rol.getIdRol());
+                
+                int resultadoActualizacion = callableStatement.executeUpdate();
+                
+                if (resultadoActualizacion == 1) {
+                    
+                    resultUpdate.correct = true;
+                    
+                } else {
+                
+                    resultUpdate.correct = false;
+                
+                }
+                
+                return true;
+                
+            });
+            
+        } catch (Exception ex) {
+        
+            resultUpdate.correct = false;
+            resultUpdate.ex = ex;
+            resultUpdate.errorMessage = ex.getLocalizedMessage();
+            
+        }
+        
+        return resultUpdate;
+        
+    }
+
+    @Override
+    public Result GetByParams(String Nombre, String ApellidoPaterno, String ApellidoMaterno, int IdRol) {
+        
+        Result resultBusqueda = new Result();
+        
+        try {
+            
+            jdbcTemplate.execute("{CALL BusquedaUsuarioDireccionSP(?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+            
+                callableStatement.setString(1, Nombre);
+                callableStatement.setString(2, ApellidoPaterno);
+                callableStatement.setString(3, ApellidoMaterno);
+                callableStatement.setInt(4, IdRol);
+                callableStatement.registerOutParameter(5, java.sql.Types.REF_CURSOR);
+                
+                ResultSet resultset = (ResultSet) callableStatement.execute().;
+                
+                
+                
+                return true;
+            
+            });
+            
+        } catch (Exception ex) {
+        
+            resultBusqueda.correct = false;
+            resultBusqueda.errorMessage = ex.getLocalizedMessage();
+            resultBusqueda.ex = ex;
+        
+        }
+        
+        return resultBusqueda;
         
     }
 

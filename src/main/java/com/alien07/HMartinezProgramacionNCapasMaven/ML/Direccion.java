@@ -19,6 +19,7 @@ public class Direccion {
     private int IdDireccion;
     
     @NotEmpty(message = "Debe de introducir una calle")
+    @Pattern(regexp = "^[a-zA-Z\\d ]+$", message = "Sólo se admiten letras y números")
     @Size(min = 1, max = 100, message = "Más de 2 carácteres y menos de 100")
     private String Calle;
     

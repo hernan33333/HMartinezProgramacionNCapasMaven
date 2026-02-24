@@ -15,10 +15,12 @@ public interface IUsuario {
     
     //Firmas de metodo
     Result GetAll();
-    Result GetById(int IdUsuario);
-    
+    Result GetById(int IdUsuario);    
     Result UsuarioDireccionAdd(Usuario usuario);
-    public Result imagenUpdate(String imagenConvertida, int IdUsuario);
+    Result Delete(int IdUsuario);
+    Result imagenUpdate(String imagenConvertida, int IdUsuario);
+    Result Update(Usuario usuario);
+    Result GetByParams(String Nombre, String ApellidoPaterno, String ApellidoMaterno, int IdRol);
     
     
 }

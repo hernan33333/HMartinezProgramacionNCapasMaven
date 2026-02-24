@@ -6,7 +6,9 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Pais;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 /**
  *
@@ -14,7 +16,9 @@ import jakarta.validation.constraints.NotNull;
  */
 public class Estado {
     
-    @NotNull(message = "Debe de seleccionar un estado")
+    @NotNull(message = "Debe de elegir un estado")
+    @Positive(message = "Estado no válido")
+    @Min(value = 1, message = "Debe de elegir un estado")
     private int IdEstado;
     
     private String Nombre;

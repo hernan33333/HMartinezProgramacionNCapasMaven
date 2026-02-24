@@ -6,7 +6,9 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Estado;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 /**
  *
@@ -14,7 +16,10 @@ import jakarta.validation.constraints.NotNull;
  */
 public class Municipio {
     
-    @NotNull(message = "Debe de elegir un municipio")private int IdMunicipio;
+    @NotNull(message = "Debe de elegir un municipio")
+    @Positive(message = "Municipio no válido")
+    @Min(value = 1, message = "Debe de elegir un municipio")
+    private int IdMunicipio;
     
     private String Nombre;
     
