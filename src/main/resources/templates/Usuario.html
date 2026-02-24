@@ -18,11 +18,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         <nav class="navbar bg-body-tertiary">
             <div class="container-fluid">
                 <a class="navbar-brand">Usuarios</a>
-                <form class="d-flex" method="post" role="search" th:object="${usuario}" th:action="@{/usuario/searchusuarios}">
-                    <input class="form-control me-2" th:name="Nombre" type="search" placeholder="Nombre..." aria-label="Search">
-                    <input class="form-control me-2" th:name="ApellidoPaterno" type="search" placeholder="Apellido paterno..." aria-label="Search">
-                    <input class="form-control me-2" th:name="ApellidoMaterno" type="search" placeholder="Apellido materno..." aria-label="Search">
-                    <select class="form-select">
+                <form class="d-flex" method="post" role="search" th:object="${usuarioBusqueda}" th:action="@{/usuario/searchusuarios}">
+                    <input class="form-control me-2" th:name="Nombre" th:field="*{Nombre}" type="search" placeholder="Nombre..." aria-label="Search">
+                    <input class="form-control me-2" th:name="ApellidoPaterno" th:field="*{ApellidoPaterno}" type="search" placeholder="Apellido paterno..." aria-label="Search">
+                    <input class="form-control me-2" th:name="ApellidoMaterno" th:field="*{ApellidoMaterno}" type="search" placeholder="Apellido materno..." aria-label="Search">
+                    <select class="form-select" th:field="*{Rol.IdRol}">
                         <option value="0">Seleccione un rol...</option>
                         <option th:each="rol : ${roles}" th:value="${rol.IdRol}" th:text="${rol.Nombre}"></option>
                     </select>
@@ -167,6 +167,46 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             title: "Usuario agregado correctamente",
             icon: "success",
             draggable: true
+        });
+    </script>
+    
+    <script th:if="${successSearchMessage}" th:inline="javascript">
+        Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: [[${successSearchMessage}]],
+            showConfirmButton: false,
+            timer: 1500
+        });
+    </script>
+    
+    <script th:if="${errorMessageServidorSearch}" th:inline="javascript">
+        Swal.fire({
+        icon: "error",
+                title: "Algo salió mal",
+                text: [[${errorMessageServidorSearch}]],
+                footer: 
+                '<a href="#errorBusquedaServidor" data-bs-toggle="collapse" aria-expanded="false" aria-controls="errorBusquedaServidor" role="button">¿Por qué sucedió esto?</a>\n\
+                <div class="collapse" id="errorBusquedaServidor">\n\
+                    <div class="card card-body">\n\
+                        Hubo un problema desde el servidor. Inténtelo más tarde.\n\
+                    </div>\n\
+                </div>'
+        });
+    </script>
+    
+    <script th:if="${notFoundMessage}" th:inline="javascript">
+        Swal.fire({
+        icon: "error",
+                title: "Auch!",
+                text: [[${notFoundMessage}]],
+                footer: 
+                '<a href="#errorBusquedaVacia" data-bs-toggle="collapse" aria-expanded="false" aria-controls="errorBusquedaVacia" role="button">¿Por qué sucedió esto?</a>\n\
+                <div class="collapse" id="errorBusquedaVacia">\n\
+                    <div class="card card-body">\n\
+                        No hay coincidencias con su búsqueda.\n\
+                    </div>\n\
+                </div>'
         });
     </script>
     

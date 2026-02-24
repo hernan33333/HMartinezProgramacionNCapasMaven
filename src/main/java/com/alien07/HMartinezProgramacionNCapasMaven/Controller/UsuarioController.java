@@ -62,7 +62,7 @@ public class UsuarioController {
 
         model.addAttribute("usuarios", result.objects);
         model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
-        model.addAttribute("usuario", new Usuario());
+        model.addAttribute("usuarioBusqueda", new Usuario());
 
         return "Usuario";
 
@@ -199,16 +199,36 @@ public class UsuarioController {
     }
     
     @PostMapping("searchusuarios")
-    public String BuscarUsuarios(@RequestParam(name = "Nombre") String Nombre, @RequestParam(name = "ApellidoPaterno") String ApellidoPaterno, @RequestParam(name = "ApellidoMaterno") String ApellidoMaterno, @RequestParam(name = "Rol") int IdRol,Model model){
+    public String BuscarUsuarios(@ModelAttribute("usuarioBusqueda") Usuario usuarioBusqueda, Model model, RedirectAttributes redirectAttributes){
     
-        model.addAttribute("usuario", new Usuario());
-        model.addAttribute("Nombre", Nombre);
-        model.addAttribute("ApellidoPaterno", ApellidoPaterno);
-        model.addAttribute("ApellidoMaterno", ApellidoMaterno);
-        model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+        Result resultBusqueda = usuarioDAOImplementation.GetByParams(usuarioBusqueda.getNombre(), usuarioBusqueda.getApellidoPaterno(), usuarioBusqueda.getApellidoMaterno(), usuarioBusqueda.Rol.getIdRol());
         
-        return "Usuario";
-    
+        if (resultBusqueda.correct) {
+            
+            if (resultBusqueda.objects.isEmpty()) {
+                
+                redirectAttributes.addFlashAttribute("notFoundMessage", resultBusqueda.errorMessage);
+                
+                return "redirect:/usuario";
+                
+            } else {
+            
+                model.addAttribute("usuarios", resultBusqueda.objects);
+                model.addAttribute("usuario", usuarioBusqueda);
+                model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
+                model.addAttribute("successSearchMessage", "¡Filtros aplicados!");
+
+                return "Usuario";
+                
+            }
+            
+        } else {
+        
+            redirectAttributes.addFlashAttribute("errorMessageServidorSearch", "Hubo un problema con el servidor: " + resultBusqueda.errorMessage + "\nInténtelo más tarde.");
+            
+            return "redirect:/usuario";
+        
+        }
     }
     
     @PostMapping("actualizarimagen/{IdUsuario}")

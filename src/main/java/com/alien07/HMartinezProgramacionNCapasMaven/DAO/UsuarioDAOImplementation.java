@@ -398,10 +398,62 @@ public class UsuarioDAOImplementation implements IUsuario {
                 callableStatement.setInt(4, IdRol);
                 callableStatement.registerOutParameter(5, java.sql.Types.REF_CURSOR);
                 
-                ResultSet resultset = (ResultSet) callableStatement.execute().;
+                callableStatement.execute();
                 
+                ResultSet resultset = (ResultSet) callableStatement.getObject(5);
                 
+                resultBusqueda.objects = new ArrayList<>();
                 
+                if (resultset.next()) {
+                    
+                    do{
+                        
+                        int idUsuario = resultset.getInt("IdUsuario");
+                        
+                        if (!resultBusqueda.objects.isEmpty() && idUsuario == ((Usuario) (resultBusqueda.objects.get(resultBusqueda.objects.size() - 1))).getIdUsuario()) {
+                            
+                            ((Usuario) (resultBusqueda.objects.get(resultBusqueda.objects.size() - 1))).Direcciones.add(agregarDireccion(resultset));
+                            
+                        } else {
+                        
+                            Usuario usuario = new Usuario();
+                            usuario.Rol = new Rol();
+                            
+                            usuario.setIdUsuario(idUsuario);
+                            usuario.setNombre(resultset.getString("NombreUsuario"));
+                            usuario.setApellidoPaterno(resultset.getString("ApellidoPaterno"));
+                            usuario.setApellidoMaterno(resultset.getString("ApellidoMaterno"));
+                            usuario.setUserName(resultset.getString("UserName"));
+                            usuario.setFechaNacimiento(resultset.getDate("FechaNacimiento"));
+                            usuario.setEmail(resultset.getString("Email"));
+                            usuario.setSexo(resultset.getString("Sexo"));
+                            usuario.setTelefono(resultset.getString("Telefono"));
+                            usuario.Rol.setNombre(resultset.getString("NombreRol"));
+                            usuario.setImagen(resultset.getString("Imagen"));
+                        
+                            int IdDireccion = resultset.getInt("IdDireccion");
+                            
+                            if (IdDireccion != 0) {
+                                
+                                usuario.Direcciones = new ArrayList<>();
+                                usuario.Direcciones.add(agregarDireccion(resultset));
+                                
+                            }
+                            
+                            resultBusqueda.objects.add(usuario);
+                            
+                        }
+                        
+                    } while (resultset.next());
+                    
+                    resultBusqueda.correct = true;
+                    
+                } else {
+                
+                    resultBusqueda.correct = true;
+                    resultBusqueda.errorMessage = "No se encontraron resultados con los parámetros proporcionados";
+                
+                }
                 return true;
             
             });
