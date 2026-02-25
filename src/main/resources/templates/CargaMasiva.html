@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<!--
+Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this template
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"/>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    </head>
+    <body>
+        <div class="container d-flex justify-content-center align-items-center" style="height: 100vh">
+            <div class="card py-5 px-3">
+                <h5 class="m-2 text-center">Carga masiva</h5>
+                <span class="mobile-text btn btn-primary" id="mostrarFormulario" onclick="mostrarFormulario()">Mostrar el formulario</span>
+                <div id="botones" style="display: none">
+                    <div class="btn-group row">
+                        <span class="mobile-text col-12 text-center">Seleccione un tipo de archivo</span>
+                        <button class="btn btn-success col-6" id="btnExcel">.xlsx</button>
+                        <button class="btn btn-info col-6" id="btnTxt">.txt</button>
+                    </div>
+                </div>
+                <div id="formulario" style="display: none">
+                    <form action="/usuario/cargamasiva" method="post" enctype="multipart/form-data">
+                        <input class="form-control" type="file" id="archivo" name="archivo" accept=".xlsx, .txt">
+                        <button type="submit" class="btn btn-primary" id="cargaMasiva">Subir archivo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+    
+    <script>
+        
+        function mostrarFormulario(){
+        
+            $("#mostrarFormulario").css("display", "none");
+            $("#botones").css("display", "block");
+        
+        }
+        
+        $(document).ready(function(){
+            
+            var tipoArchivo = "";
+           
+           $("#btnExcel").on("click", function(){
+               
+                tipoArchivo = "xlsx";
+               
+               $("#formulario").css("display", "block");
+               $("#archivo").attr("accept", ".xlsx");
+               
+               $("#cargaMasiva").removeClass("btn-info");
+               $("#cargaMasiva").addClass("btn-success");
+               
+               
+           });
+           
+           $("#btnTxt").on("click", function (){
+              
+              tipoArchivo = "txt";
+              
+              $("#formulario").css("display", "block");
+              $("#archivo").attr("accept", ".txt");
+              
+              $("#cargaMasiva").removeClass("btn-success");
+              $("#cargaMasiva").addClass("btn-info");
+              
+           });
+           
+           $("#archivo").change(function(){
+               
+                if (this.files.length > 0) {
+                    
+                    var nombreArchivo = this.files[0].name;
+                    var extension = nombreArchivo.split('.').pop().toLowerCase();
+                    
+                    console.log(extension);
+                    console.log(tipoArchivo)
+                    
+                    if (extension !== tipoArchivo) {
+                        
+                        Swal.fire({
+                            title: "¡Archivo no válido!",
+                            icon: "error",
+                            text: "Por favor seleccione un archivo " + tipoArchivo.toUpperCase() + " válido.",
+                            draggable: true
+                        });
+                        
+                        this.value= "";
+                        
+                    }
+               
+                }
+               
+           });
+        
+        });
+    </script>
+    
+</html>

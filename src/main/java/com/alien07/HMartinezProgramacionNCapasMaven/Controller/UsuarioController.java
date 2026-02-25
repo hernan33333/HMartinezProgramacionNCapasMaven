@@ -12,15 +12,30 @@ import com.alien07.HMartinezProgramacionNCapasMaven.DAO.PaisDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.RolDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.UsuarioDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion;
+import com.alien07.HMartinezProgramacionNCapasMaven.ML.ErroresArchivo;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Result;
+import com.alien07.HMartinezProgramacionNCapasMaven.Service.ValidationService;
 import jakarta.validation.Valid;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -54,6 +69,8 @@ public class UsuarioController {
     private MunicipioDAOImplementation municipioDAOImplementation;
     @Autowired
     private ColoniaDAOImplementation coloniaDAOImplementation;
+    @Autowired
+    private ValidationService validationService;
 
     @GetMapping()// localhost:8080/usuario
     public String Index(Model model) {
@@ -231,6 +248,69 @@ public class UsuarioController {
         }
     }
     
+    @GetMapping("cargamasiva")
+    public String CargaMasiva(){
+    
+        return "CargaMasiva";
+    
+    }
+    
+    @PostMapping("cargamasiva")
+    public String CargaMasiva(@RequestParam("archivo") MultipartFile archivo, Model model){
+        
+        try {
+            
+            if (archivo != null) {
+                
+                Boolean archivoValido = validarArchivo(archivo);
+                
+                if (archivoValido) {
+                    
+                    String rutaBase = System.getProperty("user.dir");
+                    String rutaCarpeta = "src/main/resources/archivosCM";
+                    String fecha = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmSS"));
+                    String nombreArchivo = fecha + archivo.getOriginalFilename();
+                    String rutaArchivo = rutaBase + "/" + rutaCarpeta + "/" + nombreArchivo;
+                    String extension = nombreArchivo.substring(nombreArchivo.lastIndexOf('.') + 1).toLowerCase();
+                    
+                    List<Usuario> usuarios = null;
+                    
+                    archivo.transferTo(new File(rutaArchivo));
+                    
+                    if (extension.equals("txt")) {
+                        
+                        usuarios = LecturaArchivoTxt(new File(rutaArchivo));
+                        
+                    } else {
+                    
+                        
+                    
+                    }
+                    
+                    
+                } else {
+                
+                    model.addAttribute("errorArchivoNoValido", "El archivo no es un .xlsx o .txt");
+                
+                }
+                
+                
+            } else {
+            
+                
+            
+            }
+            
+        } catch (Exception ex) {
+            
+            model.addAttribute("errorArchivo", "El archivo no es válido");
+            
+        }
+        
+        return "CargaMasiva";
+        
+    }
+    
     @PostMapping("actualizarimagen/{IdUsuario}")
     public String ActualizarImagen(@PathVariable("IdUsuario") int IdUsuario, @RequestParam("imagenActualizar") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException {
 
@@ -345,6 +425,38 @@ public class UsuarioController {
 
     }
     
+    public Boolean validarArchivo(MultipartFile archivo){
+        
+        String nombreOriginal = archivo.getOriginalFilename();
+        
+        if (nombreOriginal == null || nombreOriginal.trim().isEmpty()) {
+            
+            return false;
+            
+        }
+        
+        int ultimoIndice = nombreOriginal.lastIndexOf('.');
+
+        if (ultimoIndice <= 0 || ultimoIndice == nombreOriginal.length() - 1) {
+
+            return false;
+
+        }
+        
+        String extension = nombreOriginal.substring(ultimoIndice + 1).toLowerCase();
+
+        if (extension.equals("txt") || extension.equals("xlsx")) {
+
+            return true;
+
+        } else {
+
+            return false;
+
+        }
+    
+    }
+    
     public Boolean verificarImagen(MultipartFile imagen) {
 
         if (imagen != null) {
@@ -415,6 +527,62 @@ public class UsuarioController {
 
         }
 
+    }
+
+    private List<Usuario> LecturaArchivoTxt(File archivo) {
+        
+        List<Usuario> usuarios;
+        
+        try (InputStream inputStream = new FileInputStream(archivo);
+                BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream))){
+                
+            usuarios  = new ArrayList<>();
+            
+            String cadena = "";
+            
+            while((cadena = bufferedReader.readLine()) != null){
+            
+                String[] datosUsuario = cadena.split("\\|");
+                
+                Usuario usuario = new Usuario();
+                usuario.setNombre(datosUsuario[0]);
+                usuario.setApellidoPaterno(datosUsuario[1]);
+                
+                usuarios.add(usuario);
+            }
+        
+        } catch (Exception ex) {
+        
+            return null;
+            
+        }
+        
+        return usuarios;
+        
+    }
+    
+    public List<ErroresArchivo> ValidarDatos(List<Usuario> usuarios){
+    
+        List<ErroresArchivo> errores= new ArrayList<>();
+        
+        for (Usuario usuario : usuarios) {
+            
+            BindingResult bindingResult = validationService.validateObject(usuario);
+            
+            if (bindingResult.hasErrors()) {
+                
+                for (ObjectError objectError : bindingResult.getAllErrors()) {
+                    
+                    ErroresArchivo erroresArchivo = new ErroresArchivo();
+                    
+                    //Hacer la insercion de los errores
+                    
+                }
+                
+            }
+            
+        }
+    
     }
 
 }
