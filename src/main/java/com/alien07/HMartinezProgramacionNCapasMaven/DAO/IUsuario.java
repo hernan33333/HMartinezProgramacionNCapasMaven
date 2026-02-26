@@ -6,6 +6,7 @@ package com.alien07.HMartinezProgramacionNCapasMaven.DAO;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Result;
+import java.util.List;
 
 /**
  *
@@ -21,6 +22,7 @@ public interface IUsuario {
     Result imagenUpdate(String imagenConvertida, int IdUsuario);
     Result Update(Usuario usuario);
     Result GetByParams(String Nombre, String ApellidoPaterno, String ApellidoMaterno, int IdRol);
+    Result InsertAll(List<Usuario> usuarios);
     
     
 }

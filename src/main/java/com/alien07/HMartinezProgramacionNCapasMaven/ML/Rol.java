@@ -4,9 +4,7 @@
  */
 package com.alien07.HMartinezProgramacionNCapasMaven.ML;
 
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 
 /**
  *

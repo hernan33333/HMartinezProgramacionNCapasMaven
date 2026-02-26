@@ -8,7 +8,9 @@ import com.alien07.HMartinezProgramacionNCapasMaven.ML.*;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.CallableStatementCallback;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -467,6 +469,79 @@ public class UsuarioDAOImplementation implements IUsuario {
         }
         
         return resultBusqueda;
+        
+    }
+
+    @Override
+    public Result InsertAll(List<Usuario> usuarios) {
+        
+        Result resultAll = new Result();
+        
+        try {
+            
+            jdbcTemplate.execute("{CALL UsuarioDireccionAddSP(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+                
+                for (int i = 1; i <= usuarios.size(); i++) {
+                    
+                    callableStatement.setString(1, usuarios.get(i-1).getNombre());
+                    callableStatement.setString(2, usuarios.get(i-1).getApellidoPaterno());
+                    callableStatement.setDate(3, new Date(usuarios.get(i-1).getFechaNacimiento().getTime()));
+                    callableStatement.setString(4, usuarios.get(i-1).getUserName());
+                    callableStatement.setString(5, usuarios.get(i-1).getApellidoMaterno());
+                    callableStatement.setString(6, usuarios.get(i-1).getEmail());
+                    callableStatement.setString(7, usuarios.get(i-1).getPassword());
+                    callableStatement.setString(8, usuarios.get(i-1).getSexo());
+                    callableStatement.setString(9, usuarios.get(i-1).getTelefono());
+                    callableStatement.setInt(10, usuarios.get(i-1).Rol.getIdRol());
+                    callableStatement.setString(11, usuarios.get(i-1).Direcciones.get(0).getCalle());
+                    callableStatement.setString(12, usuarios.get(i-1).Direcciones.get(0).getNumeroExterior());
+                    callableStatement.setString(13, usuarios.get(i-1).Direcciones.get(0).getNumeroInterior());
+                    callableStatement.setInt(14, usuarios.get(i-1).Direcciones.get(0).Colonia.getIdColonia());
+                    callableStatement.setString(15, usuarios.get(i-1).getImagen());
+                    
+                    callableStatement.addBatch();
+                    
+                    int[] resultadoBatch = null;
+                    
+                    if (i % 100 == 0) {
+                        
+                        resultadoBatch = callableStatement.executeBatch();
+                        
+                    }
+                    
+                    Boolean ejecucionCorrecta = null;
+                    
+                    for (int j = 0; j < resultadoBatch.length; j++) {
+                        
+                        if (resultadoBatch[j] >= 0 || resultadoBatch[j] == Statement.SUCCESS_NO_INFO) {
+                            ejecucionCorrecta  = true;
+                        } else {
+                            ejecucionCorrecta  = false;
+                        }
+                        
+                    }
+                    
+                    if (ejecucionCorrecta) {
+                        resultAll.correct = true;
+                    } else {
+                        resultAll.correct = false;
+                    }
+                    
+                }
+                
+                return true;
+                
+            });
+            
+        } catch (Exception ex) {
+            
+            resultAll.correct = false;
+            resultAll.errorMessage = ex.getLocalizedMessage();
+            resultAll.ex = ex;
+            
+        }
+        
+        return resultAll;
         
     }
 

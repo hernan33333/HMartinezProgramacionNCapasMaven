@@ -10,31 +10,31 @@ package com.alien07.HMartinezProgramacionNCapasMaven.ML;
  */
 public class ErroresArchivo {
     
-    private int fila;
-    private String dato;
-    private String descripcion;
+    private int Fila;
+    private String Dato;
+    private String Descripcion;
     
     public int getFila(){
-        return this.fila;
+        return this.Fila;
     }
     
-    public void setFila(int fila){
-        this.fila = fila;
+    public void setFila(int Fila){
+        this.Fila = Fila;
     }
     
     public String getDato(){
-        return this.dato;
+        return this.Dato;
     }
     
-    public void setDato(String dato){
-        this.dato = dato;
+    public void setDato(String Dato){
+        this.Dato = Dato;
     }
     
     public String getDescripcion(){
-        return this.descripcion;
+        return this.Descripcion;
     }
     
-    public void setDescripcion(String descripcion){
-        this.descripcion = descripcion;
+    public void setDescripcion(String Descripcion){
+        this.Descripcion = Descripcion;
     }
 }
