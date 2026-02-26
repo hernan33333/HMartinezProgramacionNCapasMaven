@@ -95,9 +95,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                                 <span class="class" th:text="|${direccion.Calle} ${direccion.NumeroExterior} ${direccion.NumeroInterior}, ${direccion.Colonia.Nombre} ${direccion.Colonia.CodigoPostal}, ${direccion.Colonia.Municipio.Nombre}, ${direccion.Colonia.Municipio.Estado.Nombre}, ${direccion.Colonia.Municipio.Estado.Pais.Nombre}|"></span>
                                             </td>
                                             <td>
-                                                <button id="botonEditarDireccion" class="btn btn-sm btn-warning" th:value="${numero.index}" onclick="formularioDireccion(this)">
-                                                    <i class="bi bi-pencil-square"></i>
-                                                </button>
+                                                <form th:object="${usuario}" th:action="@{/usuario/actualizardireccion/{numeroDireccion} (numeroDireccion = ${numero.Index})}">
+                                                    <button id="botonEditarDireccion" type="submit" class="btn btn-sm btn-warning">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </button>
+                                                </form>
                                                 <button id="botonEliminarDireccion" class="btn btn-sm btn-danger" th:onclick="'ConfirmarEliminacion(' + ${direccion.IdDireccion} + ')'">
                                                     <i class="bi bi-trash3-fill"></i>
                                                 </button>
@@ -318,7 +320,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             </div>
         </div>
     </body>
-
+    
     <script>
 
         $(document).ready(function(){

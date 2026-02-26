@@ -22,7 +22,7 @@ public interface IUsuario {
     Result imagenUpdate(String imagenConvertida, int IdUsuario);
     Result Update(Usuario usuario);
     Result GetByParams(String Nombre, String ApellidoPaterno, String ApellidoMaterno, int IdRol);
-    Result InsertAll(List<Usuario> usuarios);
+    Result AddAll(List<Usuario> usuarios);
     
     
 }

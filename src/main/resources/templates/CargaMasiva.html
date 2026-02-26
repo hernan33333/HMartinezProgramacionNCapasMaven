@@ -27,7 +27,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 </div>
                 <div id="procesarArchivo" style="display: none">
                     <span class="mobile-text col-12 text-center">Datos validados correctamente</span>
-                    <form action="/usuario/cargamasiva/procesar" method="get">
+                    <form th:action="@{/usuario/cargamasiva/procesar/{idSession} (idSession = ${idSession})}" method="get">
                         <button class="btn btn-success col-12" type="submit">Procesar archivo</button>
                     </form>
                 </div>

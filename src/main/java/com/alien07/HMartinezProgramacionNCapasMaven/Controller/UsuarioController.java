@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -123,6 +124,17 @@ public class UsuarioController {
         model.addAttribute("roles", resultRol.objects);
 
         return "formulario";
+    }
+    
+    @GetMapping("actualizardireccion/{numeroDireccion}")
+    public String ActualizarDireccion(@PathVariable("numeroDireccion") int numeroDireccion, @ModelAttribute("usuario") Usuario usuario, Model model){
+        
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("numeroDireccion", numeroDireccion);
+        model.addAttribute("noMostrarUsuario", true);
+        
+        return "Formulario";
+    
     }
     
     @GetMapping("getestadosbypais/{IdPais}")
@@ -261,10 +273,10 @@ public class UsuarioController {
     
     }
     
-    @GetMapping("cargamasiva/procesar")
-    public String ProcesarCargaMasiva(RedirectAttributes redirectAttributes, HttpSession session){
+    @GetMapping("cargamasiva/procesar/{session}")
+    public String ProcesarCargaMasiva(@PathVariable("session") String strSession, RedirectAttributes redirectAttributes, HttpSession session){
         
-        File archivo = (File) session.getAttribute("archivoValidado");
+        File archivo = new File((String) session.getAttribute(strSession));
         
         List<Usuario> usuarios;
         
@@ -278,9 +290,9 @@ public class UsuarioController {
             
         }
         
-        Result resultAll = usuarioDAOImplementation.InsertAll(usuarios);
+        Result resultAddAll = usuarioDAOImplementation.AddAll(usuarios);
         
-        if (resultAll.correct) {
+        if (resultAddAll.correct) {
             
             redirectAttributes.addFlashAttribute("successMessage", "Usuarios insertados con éxito");
             
@@ -348,11 +360,15 @@ public class UsuarioController {
             List<ErroresArchivo> erroresArchivo = ValidarDatos(usuarios);
                     
             if (erroresArchivo.isEmpty()) {
-            
-                session.setAttribute("archivoValidado", new File(rutaArchivo));
-                redirectAttributes.addFlashAttribute("successMessage", "¡Se validaron correctamente los datos!");
                 
-                return "redirect:/usuario/cargamasiva";
+                String uuid = UUID.randomUUID().toString();
+                
+                session.setAttribute(uuid, rutaArchivo);
+                model.addAttribute("idSession", uuid);
+                
+                model.addAttribute("successMessage", "¡Se validaron correctamente los datos!");
+                
+                return "CargaMasiva";
 
             } else {
 
@@ -674,7 +690,6 @@ public class UsuarioController {
                     }
                     
                     erroresArchivo.setDescripcion("El valor: '" + campoError.getRejectedValue() + "' NO cumple con la(s) condición(es): " + objectError.getDefaultMessage());
-
                     errores.add(erroresArchivo);
                     
                 }
@@ -736,12 +751,9 @@ public class UsuarioController {
                 
                 }
                 
-                
-                
                 usuarios.add(usuario);
                 
             }
-            
             
         } catch (Exception ex) {
             
