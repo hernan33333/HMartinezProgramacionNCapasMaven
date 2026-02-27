@@ -16,7 +16,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </head>
     <body style="background-color: #E3E3FF">
         <div class="container">
-            <div class="main-body" th:object="${usuario}">
+            <div class="main-body">
                 <div class="row gutters-sm mt-3">
                     <div class="col-lg-5">
                         <div class="card">
@@ -95,7 +95,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                                 <span class="class" th:text="|${direccion.Calle} ${direccion.NumeroExterior} ${direccion.NumeroInterior}, ${direccion.Colonia.Nombre} ${direccion.Colonia.CodigoPostal}, ${direccion.Colonia.Municipio.Nombre}, ${direccion.Colonia.Municipio.Estado.Nombre}, ${direccion.Colonia.Municipio.Estado.Pais.Nombre}|"></span>
                                             </td>
                                             <td>
-                                                <form th:object="${usuario}" th:action="@{/usuario/actualizardireccion/{numeroDireccion} (numeroDireccion = ${numero.Index})}">
+                                                <form method="get" th:action="@{/usuario/{idusuario}/actualizardireccion/{iddireccion} (idusuario = ${usuario.IdUsuario},iddireccion = ${direccion.IdDireccion})}">
                                                     <button id="botonEditarDireccion" type="submit" class="btn btn-sm btn-warning">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </button>

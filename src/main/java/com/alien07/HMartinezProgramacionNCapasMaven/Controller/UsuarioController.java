@@ -126,15 +126,48 @@ public class UsuarioController {
         return "formulario";
     }
     
-    @GetMapping("actualizardireccion/{numeroDireccion}")
-    public String ActualizarDireccion(@PathVariable("numeroDireccion") int numeroDireccion, @ModelAttribute("usuario") Usuario usuario, Model model){
+    @GetMapping("{IdUsuario}/actualizardireccion/{IdDireccion}")
+    public String ActualizarDireccion(@PathVariable("IdDireccion") int IdDireccion, @PathVariable("IdUsuario") int IdUsuario, Model model){
         
-        model.addAttribute("usuario", usuario);
-        model.addAttribute("numeroDireccion", numeroDireccion);
+        Direccion direccion = (Direccion) usuarioDAOImplementation.GetDireccionById(IdUsuario, IdDireccion).object;
+        
+        model.addAttribute("direccion", direccion);
+        model.addAttribute("idusuario", IdUsuario);
+        Result resultPais = paisDAOImplementation.GetAll();
+        model.addAttribute("paises", resultPais.objects);
         model.addAttribute("noMostrarUsuario", true);
         
         return "Formulario";
     
+    }
+    
+    @PostMapping("actualizardireccion/{IdUsuario}/direccion/{IdDireccion}")
+    public String ActualizarDireccion(@PathVariable("IdUsuario") int IdUsuario, @PathVariable("IdDireccion") int IdDireccion, @Valid @ModelAttribute("direccion") Direccion direccion, BindingResult bindingResult, Model model, RedirectAttributes redirectAttributes){
+        
+        direccion.setIdDireccion(IdDireccion);
+        
+        if (bindingResult.hasErrors()) {
+            
+            model.addAttribute("direccion", direccion);
+            agregarValoresModel(model, direccion);
+            return "Formulario";
+            
+        }
+        
+        Result resultActualizacion = usuarioDAOImplementation.ActualizarDireccion(direccion);
+        
+        if (resultActualizacion.correct) {
+            
+            redirectAttributes.addFlashAttribute("successMessage", "¡Se actualizó correctamente la dirección!");
+            
+        } else {
+        
+            redirectAttributes.addFlashAttribute("errorMessage", resultActualizacion.errorMessage);
+        
+        }
+        
+        return "redirect:/usuario/getbyid/" + IdUsuario;
+        
     }
     
     @GetMapping("getestadosbypais/{IdPais}")
@@ -423,8 +456,9 @@ public class UsuarioController {
     public String Formulario(@Valid @ModelAttribute("usuario") Usuario usuario, BindingResult bindingResult, @RequestParam("imagenFile") MultipartFile imagen, Model model, RedirectAttributes redirectAttributes) throws IOException {
 
         if (bindingResult.hasErrors()) {
-
-            agregarValoresModel(model, usuario);
+            
+            model.addAttribute("usuario", usuario);
+            agregarValoresModel(model, usuario.Direcciones.get(0));
 
             return "formulario";
 
@@ -449,8 +483,9 @@ public class UsuarioController {
         } else {
 
             model.addAttribute("errorMessage", "Hubo un error al intentar registrar al usuario: " + result.errorMessage);
-
-            agregarValoresModel(model, usuario);
+            
+            model.addAttribute("usuario", usuario);
+            agregarValoresModel(model, usuario.Direcciones.get(0));
 
             return "formulario";
 
@@ -572,25 +607,24 @@ public class UsuarioController {
 
     }
 
-    public void agregarValoresModel(Model model, Usuario usuario) {
+    public void agregarValoresModel(Model model, Direccion direccion) {
 
-        model.addAttribute("usuario", usuario);
         model.addAttribute("paises", paisDAOImplementation.GetAll().objects);
         model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
 
-        int IdPais = usuario.Direcciones.get(0).Colonia.Municipio.Estado.Pais.getIdPais();
+        int IdPais = direccion.Colonia.Municipio.Estado.Pais.getIdPais();
 
         if (IdPais > 0) {
 
             model.addAttribute("estados", estadoDAOImplementation.GetByPais(IdPais).objects);
 
-            int IdEstado = usuario.Direcciones.get(0).Colonia.Municipio.Estado.getIdEstado();
+            int IdEstado = direccion.Colonia.Municipio.Estado.getIdEstado();
 
             if (IdEstado > 0) {
 
                 model.addAttribute("municipios", municipioDAOImplementation.GetByEstado(IdEstado).objects);
 
-                int IdMunicimipio = usuario.Direcciones.get(0).Colonia.Municipio.getIdMunicipio();
+                int IdMunicimipio = direccion.Colonia.Municipio.getIdMunicipio();
 
                 if (IdMunicimipio > 0) {
 

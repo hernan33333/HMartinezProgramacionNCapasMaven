@@ -66,6 +66,8 @@ public class Usuario {
     
     private String Imagen;
     
+    private int Status;
+    
     @Valid
     public Rol Rol;
     @Valid
@@ -174,6 +176,14 @@ public class Usuario {
     
     public void setImagen(String Imagen){
         this.Imagen = Imagen;
+    }
+    
+    public int getStatus(){
+        return Status;
+    }
+    
+    public void setStatus(int Status){
+        this.Status = Status;
     }
     
 }

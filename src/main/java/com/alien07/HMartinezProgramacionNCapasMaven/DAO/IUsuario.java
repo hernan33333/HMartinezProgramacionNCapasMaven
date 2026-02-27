@@ -4,6 +4,7 @@
  */
 package com.alien07.HMartinezProgramacionNCapasMaven.DAO;
 
+import com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Result;
 import java.util.List;
@@ -16,13 +17,15 @@ public interface IUsuario {
     
     //Firmas de metodo
     Result GetAll();
-    Result GetById(int IdUsuario);    
+    Result GetById(int IdUsuario);
+    Result GetDireccionById(int IdUsuario, int IdDireccion);
     Result UsuarioDireccionAdd(Usuario usuario);
     Result Delete(int IdUsuario);
     Result imagenUpdate(String imagenConvertida, int IdUsuario);
     Result Update(Usuario usuario);
     Result GetByParams(String Nombre, String ApellidoPaterno, String ApellidoMaterno, int IdRol);
     Result AddAll(List<Usuario> usuarios);
+    Result ActualizarDireccion(Direccion direccion);
     
     
 }

@@ -8,7 +8,6 @@ import com.alien07.HMartinezProgramacionNCapasMaven.ML.*;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,20 +51,7 @@ public class UsuarioDAOImplementation implements IUsuario {
 
                 } else {
 
-                    Usuario usuario = new Usuario();
-                    usuario.Rol = new Rol();
-
-                    usuario.setIdUsuario(idUsuario);
-                    usuario.setNombre(resultset.getString("NombreUsuario"));
-                    usuario.setApellidoPaterno(resultset.getString("ApellidoPaterno"));
-                    usuario.setApellidoMaterno(resultset.getString("ApellidoMaterno"));
-                    usuario.setUserName(resultset.getString("UserName"));
-                    usuario.setFechaNacimiento(resultset.getDate("FechaNacimiento"));
-                    usuario.setEmail(resultset.getString("Email"));
-                    usuario.setSexo(resultset.getString("Sexo"));
-                    usuario.setTelefono(resultset.getString("Telefono"));
-                    usuario.Rol.setNombre(resultset.getString("NombreRol"));
-                    usuario.setImagen(resultset.getString("Imagen"));
+                    Usuario usuario = agregarUsuario(resultset);
 
                     int IdDireccion = resultset.getInt("IdDireccion");
 
@@ -113,18 +99,7 @@ public class UsuarioDAOImplementation implements IUsuario {
                     Usuario usuario = new Usuario();
                     usuario.Rol = new Rol();
 
-                    usuario.setIdUsuario(IdUsuario);
-                    usuario.setNombre(resultset.getString("NombreUsuario"));
-                    usuario.setApellidoPaterno(resultset.getString("ApellidoPaterno"));
-                    usuario.setApellidoMaterno(resultset.getString("ApellidoMaterno"));
-                    usuario.setUserName(resultset.getString("UserName"));
-                    usuario.setFechaNacimiento(resultset.getDate("FechaNacimiento"));
-                    usuario.setEmail(resultset.getString("Email"));
-                    usuario.setSexo(resultset.getString("Sexo"));
-                    usuario.setTelefono(resultset.getString("Telefono"));
-                    usuario.Rol.setIdRol(resultset.getInt("IdRol"));
-                    usuario.Rol.setNombre(resultset.getString("NombreRol"));
-                    usuario.setImagen(resultset.getString("Imagen"));
+                    usuario = agregarUsuario(resultset);
 
                     int idDireccion = resultset.getInt("IdDireccion");
 
@@ -193,6 +168,28 @@ public class UsuarioDAOImplementation implements IUsuario {
 
         return direccion;
 
+    }
+    
+    public static Usuario agregarUsuario(ResultSet resultset) throws SQLException{
+    
+        Usuario usuario = new Usuario();
+        usuario.Rol = new Rol();
+        
+        usuario.setIdUsuario(resultset.getInt("IdUsuario"));
+        usuario.setNombre(resultset.getString("NombreUsuario"));
+        usuario.setApellidoPaterno(resultset.getString("ApellidoPaterno"));
+        usuario.setApellidoMaterno(resultset.getString("ApellidoMaterno"));
+        usuario.setUserName(resultset.getString("UserName"));
+        usuario.setFechaNacimiento(resultset.getDate("FechaNacimiento"));
+        usuario.setEmail(resultset.getString("Email"));
+        usuario.setSexo(resultset.getString("Sexo"));
+        usuario.setTelefono(resultset.getString("Telefono"));
+        usuario.Rol.setIdRol(resultset.getInt("IdRol"));
+        usuario.Rol.setNombre(resultset.getString("NombreRol"));
+        usuario.setImagen(resultset.getString("Imagen"));
+        
+        return usuario;
+    
     }
 
     @Override
@@ -419,20 +416,7 @@ public class UsuarioDAOImplementation implements IUsuario {
                             
                         } else {
                         
-                            Usuario usuario = new Usuario();
-                            usuario.Rol = new Rol();
-                            
-                            usuario.setIdUsuario(idUsuario);
-                            usuario.setNombre(resultset.getString("NombreUsuario"));
-                            usuario.setApellidoPaterno(resultset.getString("ApellidoPaterno"));
-                            usuario.setApellidoMaterno(resultset.getString("ApellidoMaterno"));
-                            usuario.setUserName(resultset.getString("UserName"));
-                            usuario.setFechaNacimiento(resultset.getDate("FechaNacimiento"));
-                            usuario.setEmail(resultset.getString("Email"));
-                            usuario.setSexo(resultset.getString("Sexo"));
-                            usuario.setTelefono(resultset.getString("Telefono"));
-                            usuario.Rol.setNombre(resultset.getString("NombreRol"));
-                            usuario.setImagen(resultset.getString("Imagen"));
+                            Usuario usuario = agregarUsuario(resultset);
                         
                             int IdDireccion = resultset.getInt("IdDireccion");
                             
@@ -513,6 +497,97 @@ public class UsuarioDAOImplementation implements IUsuario {
         
         return resultAddAll;
         
+        
+    }
+
+    @Override
+    public Result GetDireccionById(int IdUsuario, int IdDireccion) {
+        
+        Result result = new Result();
+        
+        try {
+            
+            jdbcTemplate.execute("{CALL DireccionByIdSP(?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+            
+                callableStatement.setInt(1, IdUsuario);
+                callableStatement.setInt(2, IdDireccion);
+                callableStatement.registerOutParameter(3, java.sql.Types.REF_CURSOR);
+                
+                callableStatement.execute();
+                
+                ResultSet resultset = (ResultSet) callableStatement.getObject(3);
+                
+                if (resultset.next()) {
+                    
+                    Direccion direccion = agregarDireccion(resultset);
+                    
+                    result.correct = true;
+                    result.object = direccion;
+                    
+                } else {
+                
+                    result.correct = false;
+                    result.errorMessage = "No hay registros de ese usuario con esa dirección.";
+                
+                }
+                
+                return true;
+            
+            });
+            
+        } catch (Exception ex) {
+        
+            result.correct = true;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
+        
+        return result;
+        
+    }
+
+    @Override
+    public Result ActualizarDireccion(Direccion direccion) {
+        
+        Result resultActualizacion = new Result();
+        
+        try {
+            
+            jdbcTemplate.execute("{CALL DireccionUpdateSp(?,?,?,?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+        
+                callableStatement.setInt(1, direccion.getIdDireccion());
+                callableStatement.setString(2, direccion.getCalle());
+                callableStatement.setString(3, direccion.getNumeroInterior());
+                callableStatement.setString(4, direccion.getNumeroExterior());
+                callableStatement.setInt(5, direccion.Colonia.getIdColonia());
+
+                int actualizacion = callableStatement.executeUpdate();
+
+                if (actualizacion == 1) {
+
+                    resultActualizacion.correct = true;
+
+                } else {
+
+                    resultActualizacion.correct = false;
+                    resultActualizacion.errorMessage = "Hubo un problema con el servidor al actualizar la dirección.";
+
+                }
+
+                return true;
+
+            });
+            
+        } catch (Exception ex) {
+            
+            resultActualizacion.correct = true;
+            resultActualizacion.errorMessage = ex.getLocalizedMessage();
+            resultActualizacion.ex = ex;
+            
+        }
+        
+        return resultActualizacion;
         
     }
 
