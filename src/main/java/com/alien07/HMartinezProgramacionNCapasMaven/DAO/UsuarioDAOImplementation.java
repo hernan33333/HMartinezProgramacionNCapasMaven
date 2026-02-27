@@ -187,6 +187,7 @@ public class UsuarioDAOImplementation implements IUsuario {
         usuario.Rol.setIdRol(resultset.getInt("IdRol"));
         usuario.Rol.setNombre(resultset.getString("NombreRol"));
         usuario.setImagen(resultset.getString("Imagen"));
+        usuario.setStatus(resultset.getInt("Status"));
         
         return usuario;
     
@@ -588,6 +589,47 @@ public class UsuarioDAOImplementation implements IUsuario {
         }
         
         return resultActualizacion;
+        
+    }
+
+    @Override
+    public Result StatusUpdate(int IdUsuario, int Status) {
+        
+        Result resultUpdate = new Result();
+        
+        try {
+            
+            jdbcTemplate.execute("{CALL UsuarioStatusUpdate(?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
+            
+                callableStatement.setInt(1, IdUsuario);
+                callableStatement.setInt(2, Status);
+                
+                int actualizacion = callableStatement.executeUpdate();
+                
+                if (actualizacion == 1) {
+                    
+                    resultUpdate.correct = true;
+                    
+                } else {
+                
+                    resultUpdate.correct = false;
+                    resultUpdate.errorMessage = "Hubo un problema al hacer la actualización en la base de datos.";
+                
+                }
+                
+                return true;
+            
+            });
+            
+        } catch (Exception ex) {
+        
+            resultUpdate.correct = false;
+            resultUpdate.errorMessage = ex.getLocalizedMessage();
+            resultUpdate.ex = ex;
+            
+        }
+        
+        return resultUpdate;
         
     }
 

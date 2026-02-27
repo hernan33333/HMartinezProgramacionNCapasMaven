@@ -160,7 +160,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                                     <b>Estatus:</b>
                                                 </div>
                                                 <div class="form-check form-switch col-12">
-                                                    <input class="form-check-input" type="checkbox" role="switch" id="switchEstatus" onclick="CambiarEstatus(this)">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="switchEstatus" th:checked="${usuario.Status == 1 ? 'checked' : 'no'}" onclick="CambiarEstatus(this)">
+                                                    <label class="form-check-label" for="switchEstatusTexto" th:text="${usuario.Status}"></label>
+                                                </div>
+                                                <div class="form-check form-switch col-12">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="switchEstatus2" checked="false" onclick="CambiarEstatus(this)">
                                                     <label class="form-check-label" for="switchEstatusTexto">Activo</label>
                                                 </div>
                                             </div>
@@ -181,7 +185,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         
         function CambiarEstatus(input){
             
-            $(input).attr("checked", true);
+            $.ajax({
+               
+               url:""
+            
+            });
             
         }
         

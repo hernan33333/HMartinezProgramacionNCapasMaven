@@ -493,6 +493,16 @@ public class UsuarioController {
 
     }
     
+    @PostMapping("actualizar/{IdUsuario}/status/{Status}")
+    @ResponseBody
+    public Result Status(@PathVariable("IdUsuario") int IdUsuario, @PathVariable("Status") int Status){
+    
+        Result statusUpdate = usuarioDAOImplementation.StatusUpdate(IdUsuario, Status);
+        
+        return statusUpdate;
+    
+    }
+    
     @DeleteMapping("eliminarDireccion/{IdDireccion}")
     @ResponseBody
     public Result EliminarDireccion(@PathVariable("IdDireccion") int IdDireccion) {

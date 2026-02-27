@@ -26,6 +26,7 @@ public interface IUsuario {
     Result GetByParams(String Nombre, String ApellidoPaterno, String ApellidoMaterno, int IdRol);
     Result AddAll(List<Usuario> usuarios);
     Result ActualizarDireccion(Direccion direccion);
+    Result StatusUpdate(int IdUsuario, int Status);
     
     
 }
