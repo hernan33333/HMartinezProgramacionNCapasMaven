@@ -2,11 +2,18 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.alien07.HMartinezProgramacionNCapasMaven.ML;
+package com.alien07.HMartinezProgramacionNCapasMaven.JPA;
 
-import com.alien07.HMartinezProgramacionNCapasMaven.ML.Rol;
-import com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion;
-import jakarta.validation.Valid;;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -19,60 +26,79 @@ import org.springframework.format.annotation.DateTimeFormat;
  *
  * @author Alien 7
  */
+@Entity
 public class Usuario {
     
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "idusuario")
     private int IdUsuario;
     
+    @Column(name = "nombre")
     @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "Sólo debe de escribir letras")
     @NotEmpty(message = "Escriba un nombre")
     @Size(min = 3, max = 50, message = "Debe de contener más de 2 letras y menos de 50")
     private String Nombre;
     
+    @Column(name = "apellidopaterno")
     @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "Sólo debe de escribir letras")
     @NotEmpty(message = "Escriba un nombre")
     @Size(min = 3, max = 50, message = "Debe de contener más de 2 letras y menos de 50")
     private String ApellidoPaterno;
     
+    @Column(name = "apellidomaterno")
     @Pattern(regexp = "[a-zA-Z áéíóú]+", message = "Sólo debe de escribir letras")
     @Size(min = 0, max = 50, message = "Máximo 50 crácteres")
     private String ApellidoMaterno;
     
+    @Column(name = "fechanacimiento")
     @DateTimeFormat(pattern="yyyy-MM-dd")
     @Past(message = "Ingrese una fecha válida")
     private Date FechaNacimiento;
     
+    @Column(name = "username")
     @Pattern(regexp = "[a-zA-Z\\d]+", message = "Sólo debe de escribir letras o números")
     @NotEmpty(message = "Escriba un username")
     @Size(min = 3, max = 50, message = "Debe de contener más de 2 letras y menos de 50")
     private String UserName;
     
+    @Column(name = "email")
     @Pattern(regexp = "[a-zA-Z\\d\\._]+@[a-z]+\\.com", message = "El correo es inválido")
     @NotEmpty(message = "Debe de escribir un email")
     @Size(max = 254, message = "Email demasiado largo")
     private String Email;
     
+    @Column(name = "password")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\\.\\*()_])[a-zA-Z\\d`~!@#$%^&\\.\\*()_]+$", message = "Debe de contener al menos 1 minúscula, 1 mayúscula, 1 número, 1 carácter especial")
     @NotEmpty(message = "Debe de introducir una contraseña")
     @Size(min = 8, max = 16, message = "Mínimo 8 carácteres y máximo 16")
     private String Password;
     
+    @Column(name = "sexo")
     @Pattern(regexp = "[F|M|O]", message = "El sexo es inválido")
     @NotEmpty(message = "Debe de seleccionar un sexo")
     private String Sexo;
     
+    @Column(name = "telefono")
     @Pattern(regexp = "[\\d]{1,10}", message = "El número es inválido")
     @NotEmpty(message = "Debe de introducir un número")
     private String Telefono;
     
+    @Column(name = "imagen")
+    @Lob
     private String Imagen;
     
+    @Column(name = "status")
     private int Status;
     
+    @ManyToOne
+    @JoinColumn(name = "idrol")
     @Valid
     public Rol Rol;
+    
+    @OneToMany(mappedBy = "usuario")
     @Valid
     public List<Direccion> Direcciones;
-    
     
     public void setIdUsuario(int IdUsuario){
         this.IdUsuario = IdUsuario;

@@ -11,6 +11,7 @@ import com.alien07.HMartinezProgramacionNCapasMaven.DAO.MunicipioDAOImplementati
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.PaisDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.RolDAOImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.UsuarioDAOImplementation;
+import com.alien07.HMartinezProgramacionNCapasMaven.DAO.UsuarioDAOJPAImplementation;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Colonia;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.ErroresArchivo;
@@ -78,13 +79,17 @@ public class UsuarioController {
     private ColoniaDAOImplementation coloniaDAOImplementation;
     @Autowired
     private ValidationService validationService;
+    @Autowired
+    private UsuarioDAOJPAImplementation usuarioDAOJPAImplementation;
 
     @GetMapping()// localhost:8080/usuario
     public String Index(Model model) {
 
         Result result = usuarioDAOImplementation.GetAll();
-
-        model.addAttribute("usuarios", result.objects);
+        
+        Result usuariosJPA = usuarioDAOJPAImplementation.GetAll();
+        
+        model.addAttribute("usuarios", usuariosJPA.objects);
         model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
         model.addAttribute("usuarioBusqueda", new Usuario());
 

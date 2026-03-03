@@ -32,47 +32,57 @@ public class UsuarioDAOImplementation implements IUsuario {
 
         Result result = new Result();
 
-        jdbcTemplate.execute("CALL UsuarioDireccionGetAllSP(?)", (CallableStatementCallback<Boolean>) callableStatement -> {
+        try {
+            
+            jdbcTemplate.execute("{CALL UsuarioDireccionGetAllSP(?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
 
-            callableStatement.registerOutParameter(1, java.sql.Types.REF_CURSOR);
-            callableStatement.execute();
+                callableStatement.registerOutParameter(1, java.sql.Types.REF_CURSOR);
+                callableStatement.execute();
 
-            ResultSet resultset = (ResultSet) callableStatement.getObject(1);
+                ResultSet resultset = (ResultSet) callableStatement.getObject(1);
 
-            result.objects = new ArrayList<>();
+                result.objects = new ArrayList<>();
 
-            while (resultset.next()) {
+                while (resultset.next()) {
 
-                int idUsuario = resultset.getInt("IdUsuario");
+                    int idUsuario = resultset.getInt("IdUsuario");
 
-                if (!result.objects.isEmpty() && idUsuario == ((Usuario) (result.objects.get(result.objects.size() - 1))).getIdUsuario()) {
+                    if (!result.objects.isEmpty() && idUsuario == ((Usuario) (result.objects.get(result.objects.size() - 1))).getIdUsuario()) {
 
-                    ((Usuario) (result.objects.get(result.objects.size() - 1))).Direcciones.add(agregarDireccion(resultset));
+                        ((Usuario) (result.objects.get(result.objects.size() - 1))).Direcciones.add(agregarDireccion(resultset));
 
-                } else {
+                    } else {
 
-                    Usuario usuario = agregarUsuario(resultset);
+                        Usuario usuario = agregarUsuario(resultset);
 
-                    int IdDireccion = resultset.getInt("IdDireccion");
+                        int IdDireccion = resultset.getInt("IdDireccion");
 
-                    if (IdDireccion != 0) {
+                        if (IdDireccion != 0) {
 
-                        usuario.Direcciones = new ArrayList<>();
+                            usuario.Direcciones = new ArrayList<>();
 
-                        usuario.Direcciones.add(agregarDireccion(resultset));
+                            usuario.Direcciones.add(agregarDireccion(resultset));
+
+                        }
+
+                        result.objects.add(usuario);
 
                     }
 
-                    result.objects.add(usuario);
-
                 }
 
-            }
+                result.correct = true;
 
-            result.correct = true;
-
-            return true;
-        });
+                return true;
+            });
+            
+        } catch (Exception ex) {
+            
+            result.correct = false;
+            result.errorMessage = ex.getLocalizedMessage();
+            result.ex = ex;
+            
+        }
 
         return result;
 
@@ -85,7 +95,7 @@ public class UsuarioDAOImplementation implements IUsuario {
 
         try {
 
-            jdbcTemplate.execute("CALL UsuarioDireccionByIdSP(?,?)", (CallableStatementCallback<Boolean>) callableStatement -> {
+            jdbcTemplate.execute("{CALL UsuarioDireccionByIdSP(?,?)}", (CallableStatementCallback<Boolean>) callableStatement -> {
 
                 callableStatement.setInt(1, IdUsuario);
                 callableStatement.registerOutParameter(2, java.sql.Types.REF_CURSOR);

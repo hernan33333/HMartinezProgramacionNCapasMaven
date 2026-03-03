@@ -160,12 +160,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                                     <b>Estatus:</b>
                                                 </div>
                                                 <div class="form-check form-switch col-12">
-                                                    <input class="form-check-input" type="checkbox" role="switch" id="switchEstatus" th:checked="${usuario.Status == 1 ? 'checked' : 'no'}" onclick="CambiarEstatus(this)">
-                                                    <label class="form-check-label" for="switchEstatusTexto" th:text="${usuario.Status}"></label>
-                                                </div>
-                                                <div class="form-check form-switch col-12">
-                                                    <input class="form-check-input" type="checkbox" role="switch" id="switchEstatus2" checked="false" onclick="CambiarEstatus(this)">
-                                                    <label class="form-check-label" for="switchEstatusTexto">Activo</label>
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="switchEstatus" th:value="${usuario.IdUsuario}" th:checked="${usuario.Status == 1 ? 'checked' : 'no'}" onclick="CambiarEstatus(this)">
                                                 </div>
                                             </div>
                                         </div>
@@ -185,9 +180,64 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         
         function CambiarEstatus(input){
             
+            console.log("CHECKED: " + $(input).prop("checked"));
+            
+            var cambiarStatus = $(input).prop("checked") === true ? 1 : 0;
+            
             $.ajax({
                
-               url:""
+               url:"usuario/actualizar/" + $(input).val() + "/status/" + cambiarStatus,
+               type:"post",
+               dataType:"json",
+               success: function (data, textStatus, jqXHR) {
+                        
+                    if (data.correct) {
+                        
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: "Se cambió el status del usuario con éxito",
+                            showConfirmButton: false,
+                            timer: 1500,
+                            didClose: () => {
+                                
+                                location.reload(true);
+                                
+                            }
+                        });
+                        
+                    } else {
+                        
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "error",
+                            title: "Hubo un problema al intentar cambiar el status: " + data.errorMessage,
+                            showConfirmButton: false,
+                            timer: 1500,
+                            didClose: () => {
+                                
+                                location.reload(true);
+                                
+                            }
+                        });
+                        
+                    }
+                        
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                        
+                        Swal.fire({
+                            title: "Hubo un problema al intentar conectar con el servidor.",
+                            icon: "error",
+                            draggable: true,
+                            didClose: () =>{
+                                
+                                location.reload(true);
+                                
+                            }
+                        });
+
+                }
             
             });
             
