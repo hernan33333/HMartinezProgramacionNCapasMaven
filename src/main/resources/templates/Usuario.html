@@ -263,21 +263,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         });
     </script>
     
-    <script th:if="${errorMessageServidorSearch}" th:inline="javascript">
-        Swal.fire({
-        icon: "error",
-                title: "Algo salió mal",
-                text: [[${errorMessageServidorSearch}]],
-                footer: 
-                '<a href="#errorBusquedaServidor" data-bs-toggle="collapse" aria-expanded="false" aria-controls="errorBusquedaServidor" role="button">¿Por qué sucedió esto?</a>\n\
-                <div class="collapse" id="errorBusquedaServidor">\n\
-                    <div class="card card-body">\n\
-                        Hubo un problema desde el servidor. Inténtelo más tarde.\n\
-                    </div>\n\
-                </div>'
-        });
-    </script>
-    
     <script th:if="${notFoundMessage}" th:inline="javascript">
         console.log("Hubo error")
         Swal.fire({
@@ -289,6 +274,21 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                 <div class="collapse" id="errorBusquedaVacia">\n\
                     <div class="card card-body">\n\
                         No hay coincidencias con su búsqueda.\n\
+                    </div>\n\
+                </div>'
+        });
+    </script>   
+    
+    <script th:if="${errorMessageServidorSearch}" th:inline="javascript">
+        Swal.fire({
+        icon: "error",
+                title: "Algo salió mal",
+                text: [[${errorMessageServidorSearch}]],
+                footer: 
+                '<a href="#errorBusquedaServidor" data-bs-toggle="collapse" aria-expanded="false" aria-controls="errorBusquedaServidor" role="button">¿Por qué sucedió esto?</a>\n\
+                <div class="collapse" id="errorBusquedaServidor">\n\
+                    <div class="card card-body">\n\
+                        Hubo un problema desde el servidor. Inténtelo más tarde.\n\
                     </div>\n\
                 </div>'
         });

@@ -291,14 +291,14 @@ public class UsuarioController {
                 return "redirect:/usuario";
                 
             } else {
-            
+                
                 model.addAttribute("usuarios", resultBusqueda.objects);
                 model.addAttribute("usuario", usuarioBusqueda);
                 model.addAttribute("roles", rolDAOImplementation.GetAll().objects);
                 model.addAttribute("successSearchMessage", "¡Filtros aplicados!");
-
-                return "Usuario";
                 
+                return "Usuario";
+                 
             }
             
         } else {

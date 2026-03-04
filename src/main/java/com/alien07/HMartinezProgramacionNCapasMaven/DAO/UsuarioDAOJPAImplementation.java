@@ -122,18 +122,24 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Usuario> queryJPA = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
-            queryJPA.setParameter("IdUsuario", IdUsuario);
+            Usuario usuarioJPA = entityManager.find(Usuario.class, IdUsuario);
             
-            Usuario usuarioJPA = queryJPA.getSingleResult();
+            if (usuarioJPA != null) {
             
-            Direccion direccionJPA = new Direccion();
-            modelMapper.map(direccion, direccionJPA);
-            direccionJPA.usuario = usuarioJPA;
+                Direccion direccionJPA = new Direccion();
+                modelMapper.map(direccion, direccionJPA);
+                direccionJPA.usuario = usuarioJPA;
+
+                entityManager.merge(direccionJPA);
+
+                resultUpdate.correct = true;
+                
+            } else {
             
-            entityManager.merge(direccionJPA);
+                resultUpdate.correct = false;
+                resultUpdate.errorMessage = "No se encontró el usuario en la BD.";
             
-            resultUpdate.correct = true;
+            }
             
         } catch (Exception ex) {
         
@@ -154,16 +160,25 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Direccion> queryDireccion = entityManager.createQuery("SELECT d FROM Direccion d WHERE d.IdDireccion = :IdDireccion", Direccion.class);
-            queryDireccion.setParameter("IdDireccion", IdDireccion);
+            Direccion direccionJPA = entityManager.find(Direccion.class, IdDireccion);
             
-            Direccion direccionJPA = queryDireccion.getSingleResult();
-            com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion direccionML = new com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion();
+            if (direccionJPA != null) {
+                
+                com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion direccionML = new com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion();
             
-            modelMapper.map(direccionJPA, direccionML);
+                modelMapper.map(direccionJPA, direccionML);
+
+                resultById.object = direccionML;
+                resultById.correct = true;
+                
+            } else {
             
-            resultById.object = direccionML;
-            resultById.correct = true;
+                resultById.correct = false;
+                resultById.errorMessage = "No se encontró el registro en la BD.";
+            
+            }
+            
+            
             
         } catch (Exception ex) {
         
@@ -184,19 +199,28 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
-            queryUsuario.setParameter("IdUsuario", IdUsuario);
+            Usuario usuarioJPA = entityManager.find(Usuario.class, IdUsuario);
             
-            Usuario usuarioJPA = queryUsuario.getSingleResult();
-            Direccion direccionJPA = new Direccion();
+            if (usuarioJPA != null) {
+                
+                Direccion direccionJPA = new Direccion();
             
-            modelMapper.map(direccion, direccionJPA);
+                modelMapper.map(direccion, direccionJPA);
+
+                direccionJPA.usuario = usuarioJPA;
+
+                entityManager.merge(direccionJPA);
+
+                resultUpdate.correct = true;
+                
+            } else {
             
-            direccionJPA.usuario = usuarioJPA;
+                resultUpdate.correct = false;
+                resultUpdate.errorMessage = "No se encontró el registro en la BD.";
             
-            entityManager.merge(direccionJPA);
+            }
             
-            resultUpdate.correct = true;
+            
             
         } catch (Exception ex) {
         
@@ -218,16 +242,22 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
-            queryUsuario.setParameter("IdUsuario", usuario.getIdUsuario());
+            Usuario usuarioJPA = entityManager.find(Usuario.class, usuario.getIdUsuario());
             
-            Usuario usuarioJPA = queryUsuario.getSingleResult();
+            if (usuarioJPA != null) {
+                
+                MapearDatosActualizados(usuario, usuarioJPA);
             
-            MapearDatosActualizados(usuario, usuarioJPA);
+                entityManager.merge(usuarioJPA);
+
+                resultUpdate.correct = true;
+                
+            } else {
             
-            entityManager.merge(usuarioJPA);
+                resultUpdate.correct = false;
+                resultUpdate.errorMessage = "No se encontró al usuario en la BD.";
             
-            resultUpdate.correct = true;
+            }
             
         } catch (Exception ex) {
             
@@ -264,14 +294,20 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Direccion> queryDireccion = entityManager.createQuery("SELECT d FROM Direccion d WHERE d.IdDireccion = :IdDireccion", Direccion.class);
-            queryDireccion.setParameter("IdDireccion", IdDireccion);
+            Direccion direccionJPA = entityManager.find(Direccion.class, IdDireccion);
             
-            Direccion direccionJPA = queryDireccion.getSingleResult();
+            if (direccionJPA != null) {
+                
+                entityManager.remove(direccionJPA);
             
-            entityManager.remove(direccionJPA);
+                resultDelete.correct = true;
+                
+            } else {
             
-            resultDelete.correct = true;
+                resultDelete.correct = false;
+                resultDelete.errorMessage = "No se encontró el registro en la BD.";
+            
+            }
             
         } catch (Exception ex) {
         
@@ -293,15 +329,22 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
-            queryUsuario.setParameter("IdUsuario", IdUsuario);
+            Usuario usuarioJPA = entityManager.find(Usuario.class, IdUsuario);
             
-            Usuario usuarioJPA = queryUsuario.getSingleResult();
-            usuarioJPA.setImagen(imagen);
+            if (usuarioJPA != null) {
+                
+                usuarioJPA.setImagen(imagen);
             
-            entityManager.merge(usuarioJPA);
+                entityManager.merge(usuarioJPA);
+
+                resultUpdate.correct = true;
+                
+            } else {
             
-            resultUpdate.correct = true;
+                resultUpdate.correct = false;
+                resultUpdate.errorMessage = "No se encontró el registro en la BD.";
+                
+            }
             
         } catch (Exception ex) {
         
@@ -323,14 +366,22 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
-            queryUsuario.setParameter("IdUsuario", IdUsuario);
+            Usuario usuarioJPA = entityManager.find(Usuario.class, IdUsuario);
             
-            Usuario usuarioJPA = queryUsuario.getSingleResult();
+            if (usuarioJPA != null) {
+                
+                entityManager.remove(usuarioJPA);
             
-            entityManager.remove(usuarioJPA);
+                resultDelete.correct = true;
+                
+            } else {
             
-            resultDelete.correct = true;
+                resultDelete.correct = false;
+                resultDelete.errorMessage = "No se encontró el registro en la BD.";
+            
+            }
+            
+            
             
         } catch (Exception ex) {
         
@@ -390,16 +441,24 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
-            queryUsuario.setParameter("IdUsuario", IdUsuario);
+            Usuario usuarioJPA = entityManager.find(Usuario.class, IdUsuario);
             
-            Usuario usuarioJPA = queryUsuario.getSingleResult();
+            if (usuarioJPA != null) {
+                
+                usuarioJPA.setStatus(Status);
             
-            usuarioJPA.setStatus(Status);
+                entityManager.merge(usuarioJPA);
+
+                resultStatus.correct = true;
+                
+            } else {
             
-            entityManager.merge(usuarioJPA);
+                resultStatus.correct = false;
+                resultStatus.errorMessage = "No se encontró el registro en la BD.";
             
-            resultStatus.correct = true;
+            }
+            
+            
             
         } catch (Exception ex) {
         
@@ -420,11 +479,11 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            String queryPrincipal = "SELECT u FROM Usuario u WHERE LOWER (u.Nombre) LIKE LOWER (:patronNombre) AND (u.ApellidoPaterno) LIKE LOWER (:patronApellidoPaterno) AND LOWER (u.ApellidoMaterno) LIKE LOWER (:patronApellidoMaterno)";
+            String queryPrincipal = "FROM Usuario WHERE LOWER (Nombre) LIKE LOWER (:patronNombre) AND LOWER (ApellidoPaterno) LIKE LOWER (:patronApellidoPaterno) AND LOWER (ApellidoMaterno) LIKE LOWER (:patronApellidoMaterno)";
             
             if (IdRol > 0) {
                 
-                queryPrincipal += " AND u.Rol.IdRol = :IdRol"; 
+                queryPrincipal += " AND Rol.IdRol = :IdRol"; 
                 
             }
             
@@ -443,6 +502,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
             List<Usuario> usuarios = queryBusqueda.getResultList();
             
             resultBusqueda.objects = usuarios.stream().map(usuario -> modelMapper.map(usuario, com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario.class)).collect(Collectors.toList());
+            
             resultBusqueda.correct = true;
             
         } catch (Exception ex) {
