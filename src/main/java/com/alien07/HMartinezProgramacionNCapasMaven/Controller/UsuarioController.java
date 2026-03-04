@@ -85,8 +85,7 @@ public class UsuarioController {
     @GetMapping()// localhost:8080/usuario
     public String Index(Model model) {
 
-        Result result = usuarioDAOImplementation.GetAll();
-        
+//        Result result = usuarioDAOImplementation.GetAll();
         Result usuariosJPA = usuarioDAOJPAImplementation.GetAll();
         
         model.addAttribute("usuarios", usuariosJPA.objects);
@@ -100,7 +99,8 @@ public class UsuarioController {
     @GetMapping("getbyid/{idusuario}")
     public String GetById(@PathVariable("idusuario") int IdUsuario, Model model) {
 
-        Result resultUsuario = usuarioDAOImplementation.GetById(IdUsuario);
+//        Result resultUsuario = usuarioDAOImplementation.GetById(IdUsuario);
+        Result resultUsuario = usuarioDAOJPAImplementation.GetById(IdUsuario);
 
         model.addAttribute("usuario", resultUsuario.object);
 
@@ -134,7 +134,8 @@ public class UsuarioController {
     @GetMapping("{IdUsuario}/actualizardireccion/{IdDireccion}")
     public String ActualizarDireccion(@PathVariable("IdDireccion") int IdDireccion, @PathVariable("IdUsuario") int IdUsuario, Model model){
         
-        Direccion direccion = (Direccion) usuarioDAOImplementation.GetDireccionById(IdUsuario, IdDireccion).object;
+//        Direccion direccion = (Direccion) usuarioDAOImplementation.GetDireccionById(IdUsuario, IdDireccion).object;
+        Direccion direccion = (Direccion) usuarioDAOJPAImplementation.GetDireccionById(IdDireccion).object;
         
         model.addAttribute("direccion", direccion);
         model.addAttribute("idusuario", IdUsuario);
@@ -143,7 +144,7 @@ public class UsuarioController {
         model.addAttribute("noMostrarUsuario", true);
         
         return "Formulario";
-    
+        
     }
     
     @PostMapping("actualizardireccion/{IdUsuario}/direccion/{IdDireccion}")
@@ -159,7 +160,8 @@ public class UsuarioController {
             
         }
         
-        Result resultActualizacion = usuarioDAOImplementation.ActualizarDireccion(direccion);
+//        Result resultActualizacion = usuarioDAOImplementation.ActualizarDireccion(direccion);
+        Result resultActualizacion = usuarioDAOJPAImplementation.UpdateDireccion(direccion, IdUsuario);
         
         if (resultActualizacion.correct) {
             
@@ -210,7 +212,8 @@ public class UsuarioController {
         
         if (bindingResult.hasErrors()) {
             
-            Result resultUsuario = usuarioDAOImplementation.GetById(IdUsuario);
+//            Result resultUsuario = usuarioDAOImplementation.GetById(IdUsuario);
+            Result resultUsuario = usuarioDAOJPAImplementation.GetById(IdUsuario);
 
             model.addAttribute("usuario", resultUsuario.object);
             model.addAttribute("direccion", new Direccion());
@@ -221,7 +224,8 @@ public class UsuarioController {
             return "UsuarioDetail";
         }
         
-        Result resultUpdate = usuarioDAOImplementation.Update(usuario);
+//        Result resultUpdate = usuarioDAOImplementation.Update(usuario);
+        Result resultUpdate = usuarioDAOJPAImplementation.UpdateUsuario(usuario);
         
         if (resultUpdate.correct) {
             
@@ -255,7 +259,8 @@ public class UsuarioController {
             
         }
         
-        Result resultAdd = direccionDAOImplementation.DireccionAdd(direccion, IdUsuario);
+//        Result resultAdd = direccionDAOImplementation.DireccionAdd(direccion, IdUsuario);
+        Result resultAdd = usuarioDAOJPAImplementation.AgregarDireccion(direccion, IdUsuario);
         
         if (resultAdd.correct) {
             
@@ -274,7 +279,8 @@ public class UsuarioController {
     @PostMapping("searchusuarios")
     public String BuscarUsuarios(@ModelAttribute("usuarioBusqueda") Usuario usuarioBusqueda, Model model, RedirectAttributes redirectAttributes){
     
-        Result resultBusqueda = usuarioDAOImplementation.GetByParams(usuarioBusqueda.getNombre(), usuarioBusqueda.getApellidoPaterno(), usuarioBusqueda.getApellidoMaterno(), usuarioBusqueda.Rol.getIdRol());
+//        Result resultBusqueda = usuarioDAOImplementation.GetByParams(usuarioBusqueda.getNombre(), usuarioBusqueda.getApellidoPaterno(), usuarioBusqueda.getApellidoMaterno(), usuarioBusqueda.Rol.getIdRol());
+        Result resultBusqueda = usuarioDAOJPAImplementation.Busqueda(usuarioBusqueda.getNombre(), usuarioBusqueda.getApellidoPaterno(), usuarioBusqueda.getApellidoMaterno(), usuarioBusqueda.Rol.getIdRol());
         
         if (resultBusqueda.correct) {
             
@@ -328,7 +334,8 @@ public class UsuarioController {
             
         }
         
-        Result resultAddAll = usuarioDAOImplementation.AddAll(usuarios);
+//        Result resultAddAll = usuarioDAOImplementation.AddAll(usuarios);
+        Result resultAddAll = usuarioDAOJPAImplementation.CargaMasiva(usuarios);
         
         if (resultAddAll.correct) {
             
@@ -433,7 +440,8 @@ public class UsuarioController {
         if (esImagenValida) {
 
             String imagenConvertida = Base64.getEncoder().encodeToString(imagen.getBytes());
-            resultImagen = usuarioDAOImplementation.imagenUpdate(imagenConvertida, IdUsuario);
+//            resultImagen = usuarioDAOImplementation.imagenUpdate(imagenConvertida, IdUsuario);
+            resultImagen = usuarioDAOJPAImplementation.UpdateImagen(IdUsuario, imagenConvertida);
 
             if (resultImagen.correct) {
 
@@ -478,7 +486,8 @@ public class UsuarioController {
 
         }
 
-        Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
+//        Result result = usuarioDAOImplementation.UsuarioDireccionAdd(usuario);
+        Result result = usuarioDAOJPAImplementation.Add(usuario);
 
         if (result.correct) {
 
@@ -502,7 +511,8 @@ public class UsuarioController {
     @ResponseBody
     public Result Status(@PathVariable("IdUsuario") int IdUsuario, @PathVariable("Status") int Status){
     
-        Result statusUpdate = usuarioDAOImplementation.StatusUpdate(IdUsuario, Status);
+//        Result statusUpdate = usuarioDAOImplementation.StatusUpdate(IdUsuario, Status);
+        Result statusUpdate = usuarioDAOJPAImplementation.ActualizarStatus(IdUsuario, Status);
         
         return statusUpdate;
     
@@ -512,12 +522,14 @@ public class UsuarioController {
     @ResponseBody
     public Result EliminarDireccion(@PathVariable("IdDireccion") int IdDireccion) {
 
-        Result direccion = direccionDAOImplementation.GetById(IdDireccion);
+//        Result direccion = direccionDAOImplementation.GetById(IdDireccion);
+        Result direccion = usuarioDAOJPAImplementation.GetDireccionById(IdDireccion);
         Result resultEliminacion = new Result();
 
         if (direccion.correct) {
 
-            resultEliminacion = direccionDAOImplementation.DireccionDelete(IdDireccion);
+//            resultEliminacion = direccionDAOImplementation.DireccionDelete(IdDireccion);
+            resultEliminacion = usuarioDAOJPAImplementation.DeleteDireccion(IdDireccion);
 
         } else {
 
@@ -533,12 +545,14 @@ public class UsuarioController {
     @ResponseBody
     public Result EliminarUsuario(@PathVariable("IdUsuario") int IdUsuario) {
 
-        Result usuario = usuarioDAOImplementation.GetById(IdUsuario);
+//        Result usuario = usuarioDAOImplementation.GetById(IdUsuario);
+        Result usuario = usuarioDAOJPAImplementation.GetById(IdUsuario);
         Result resultEliminacion = new Result();
 
         if (usuario.correct) {
 
-            resultEliminacion = usuarioDAOImplementation.Delete(IdUsuario);
+//            resultEliminacion = usuarioDAOImplementation.Delete(IdUsuario);
+            resultEliminacion = usuarioDAOJPAImplementation.DeleteUsuario(IdUsuario);
 
         } else {
 

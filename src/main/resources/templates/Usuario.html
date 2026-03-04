@@ -279,6 +279,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
     </script>
     
     <script th:if="${notFoundMessage}" th:inline="javascript">
+        console.log("Hubo error")
         Swal.fire({
         icon: "error",
                 title: "Auch!",

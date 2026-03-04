@@ -4,6 +4,7 @@
  */
 package com.alien07.HMartinezProgramacionNCapasMaven.DAO;
 
+import com.alien07.HMartinezProgramacionNCapasMaven.JPA.Direccion;
 import com.alien07.HMartinezProgramacionNCapasMaven.JPA.Usuario;
 import com.alien07.HMartinezProgramacionNCapasMaven.ML.Result;
 import jakarta.persistence.EntityManager;
@@ -13,6 +14,7 @@ import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  *
@@ -52,5 +54,408 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         return resultAll;
         
     }
+
+    @Override
+    @Transactional
+    public Result Add(com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario usuario) {
+        
+        Result resultAdd = new Result();
+        
+        try {
+            
+            Usuario usuarioJPA = new Usuario();
+            modelMapper.map(usuario, usuarioJPA);
+            
+            usuarioJPA.Direcciones.get(0).usuario = usuarioJPA;
+            
+            entityManager.persist(usuarioJPA);
+            
+            resultAdd.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultAdd.correct = false;
+            resultAdd.errorMessage = ex.getLocalizedMessage();
+            resultAdd.ex = ex;
+            
+        }
+        
+        return resultAdd;
+        
+    }
+
+    @Override
+    public Result GetById(int IdUsuario) {
+        
+        Result resultById = new Result();
+        
+        try {
+            
+            TypedQuery<Usuario> queryJPA = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
+            queryJPA.setParameter("IdUsuario",IdUsuario);
+            
+            Usuario usuarioJPA = queryJPA.getSingleResult();
+            com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario usuarioML = new com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario();
+            
+            modelMapper.map(usuarioJPA, usuarioML);
+            
+            resultById.object = usuarioML;
+            resultById.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultById.correct = false;
+            resultById.errorMessage = ex.getLocalizedMessage();
+            resultById.ex = ex;
+            
+        }
+        
+        return resultById;
+        
+    }
+
+    @Override
+    @Transactional
+    public Result AgregarDireccion(com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion direccion, int IdUsuario) {
+        
+        Result resultUpdate = new Result();
+        
+        try {
+            
+            TypedQuery<Usuario> queryJPA = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
+            queryJPA.setParameter("IdUsuario", IdUsuario);
+            
+            Usuario usuarioJPA = queryJPA.getSingleResult();
+            
+            Direccion direccionJPA = new Direccion();
+            modelMapper.map(direccion, direccionJPA);
+            direccionJPA.usuario = usuarioJPA;
+            
+            entityManager.merge(direccionJPA);
+            
+            resultUpdate.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultUpdate.correct = false;
+            resultUpdate.errorMessage = ex.getLocalizedMessage();
+            resultUpdate.ex = ex;
+            
+        }
+        
+        return resultUpdate;
+        
+    }
+
+    @Override
+    public Result GetDireccionById(int IdDireccion) {
+        
+        Result resultById = new Result();
+        
+        try {
+            
+            TypedQuery<Direccion> queryDireccion = entityManager.createQuery("SELECT d FROM Direccion d WHERE d.IdDireccion = :IdDireccion", Direccion.class);
+            queryDireccion.setParameter("IdDireccion", IdDireccion);
+            
+            Direccion direccionJPA = queryDireccion.getSingleResult();
+            com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion direccionML = new com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion();
+            
+            modelMapper.map(direccionJPA, direccionML);
+            
+            resultById.object = direccionML;
+            resultById.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultById.correct = false;
+            resultById.errorMessage = ex.getLocalizedMessage();
+            resultById.ex = ex;
+        }
+        
+        return resultById;
+        
+    }
+
+    @Override
+    @Transactional
+    public Result UpdateDireccion(com.alien07.HMartinezProgramacionNCapasMaven.ML.Direccion direccion, int IdUsuario) {
+        
+        Result resultUpdate = new Result();
+        
+        try {
+            
+            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
+            queryUsuario.setParameter("IdUsuario", IdUsuario);
+            
+            Usuario usuarioJPA = queryUsuario.getSingleResult();
+            Direccion direccionJPA = new Direccion();
+            
+            modelMapper.map(direccion, direccionJPA);
+            
+            direccionJPA.usuario = usuarioJPA;
+            
+            entityManager.merge(direccionJPA);
+            
+            resultUpdate.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultUpdate.correct = true;
+            resultUpdate.errorMessage = ex.getLocalizedMessage();
+            resultUpdate.ex = ex;
+            
+        }
+        
+        return resultUpdate;
+        
+    }
+
+    @Override
+    @Transactional
+    public Result UpdateUsuario(com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario usuario) {
+        
+        Result resultUpdate = new Result();
+        
+        try {
+            
+            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
+            queryUsuario.setParameter("IdUsuario", usuario.getIdUsuario());
+            
+            Usuario usuarioJPA = queryUsuario.getSingleResult();
+            
+            MapearDatosActualizados(usuario, usuarioJPA);
+            
+            entityManager.merge(usuarioJPA);
+            
+            resultUpdate.correct = true;
+            
+        } catch (Exception ex) {
+            
+            resultUpdate.correct = false;
+            resultUpdate.errorMessage = ex.getLocalizedMessage();
+            resultUpdate.ex = ex;
+            
+        }
+        
+        return resultUpdate;
+        
+    }
+    
+    static void MapearDatosActualizados(com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario usuarioML, Usuario usuarioJPA){
+    
+        usuarioJPA.setNombre(usuarioML.getNombre());
+        usuarioJPA.setApellidoPaterno(usuarioML.getApellidoPaterno());
+        usuarioJPA.setApellidoMaterno(usuarioML.getApellidoMaterno());
+        usuarioJPA.setFechaNacimiento(usuarioML.getFechaNacimiento());
+        usuarioJPA.setUserName(usuarioML.getUserName());
+        usuarioJPA.setEmail(usuarioML.getEmail());
+        usuarioJPA.setTelefono(usuarioML.getTelefono());
+        usuarioJPA.setPassword(usuarioML.getPassword());
+        usuarioJPA.setSexo(usuarioML.getSexo());
+        usuarioJPA.Rol.setIdRol(usuarioML.Rol.getIdRol());
+        
+    }
+
+    @Override
+    @Transactional
+    public Result DeleteDireccion(int IdDireccion) {
+        
+        Result resultDelete = new Result();
+        
+        try {
+            
+            TypedQuery<Direccion> queryDireccion = entityManager.createQuery("SELECT d FROM Direccion d WHERE d.IdDireccion = :IdDireccion", Direccion.class);
+            queryDireccion.setParameter("IdDireccion", IdDireccion);
+            
+            Direccion direccionJPA = queryDireccion.getSingleResult();
+            
+            entityManager.remove(direccionJPA);
+            
+            resultDelete.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultDelete.correct = false;
+            resultDelete.errorMessage = ex.getLocalizedMessage();
+            resultDelete.ex = ex;
+            
+        }
+        
+        return resultDelete;
+        
+    }
+
+    @Override
+    @Transactional
+    public Result UpdateImagen(int IdUsuario, String imagen) {
+        
+        Result resultUpdate = new Result();
+        
+        try {
+            
+            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
+            queryUsuario.setParameter("IdUsuario", IdUsuario);
+            
+            Usuario usuarioJPA = queryUsuario.getSingleResult();
+            usuarioJPA.setImagen(imagen);
+            
+            entityManager.merge(usuarioJPA);
+            
+            resultUpdate.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultUpdate.correct = false;
+            resultUpdate.errorMessage = ex.getLocalizedMessage();
+            resultUpdate.ex = ex;
+            
+        }
+        
+        return resultUpdate;
+        
+    }
+
+    @Override
+    @Transactional
+    public Result DeleteUsuario(int IdUsuario) {
+        
+        Result resultDelete = new Result();
+        
+        try {
+            
+            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
+            queryUsuario.setParameter("IdUsuario", IdUsuario);
+            
+            Usuario usuarioJPA = queryUsuario.getSingleResult();
+            
+            entityManager.remove(usuarioJPA);
+            
+            resultDelete.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultDelete.correct = false;
+            resultDelete.errorMessage = ex.getLocalizedMessage();
+            resultDelete.ex = ex;
+            
+        }
+        
+        return resultDelete;
+        
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Result CargaMasiva(List<com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario> usuarios) {
+        
+        Result resultCarga = new Result();
+        
+        try {
+            
+            List<Usuario> usuariosJPA = usuarios.stream().map(usuario -> modelMapper.map(usuario, Usuario.class)).collect(Collectors.toList());
+            
+            for (int i = 0; i < usuariosJPA.size(); i++) {
+                
+                Usuario usuario = usuariosJPA.get(i);
+                entityManager.persist(usuario);
+                
+                if (i % 50 == 0) {
+                    
+                    entityManager.flush();
+                    entityManager.clear();
+                    
+                }
+                
+            }
+            
+            resultCarga.correct = true;
+            
+        } catch (Exception ex) {
+            
+            resultCarga.correct = false;
+            resultCarga.errorMessage = ex.getLocalizedMessage();
+            resultCarga.ex = ex;
+            
+        }
+        
+        return resultCarga;
+        
+    }
+
+    @Override
+    @Transactional
+    public Result ActualizarStatus(int IdUsuario, int Status) {
+        
+        Result resultStatus = new Result();
+        
+        try {
+            
+            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("SELECT u FROM Usuario u WHERE u.IdUsuario = :IdUsuario", Usuario.class);
+            queryUsuario.setParameter("IdUsuario", IdUsuario);
+            
+            Usuario usuarioJPA = queryUsuario.getSingleResult();
+            
+            usuarioJPA.setStatus(Status);
+            
+            entityManager.merge(usuarioJPA);
+            
+            resultStatus.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultStatus.correct = false;
+            resultStatus.errorMessage = ex.getLocalizedMessage();
+            resultStatus.ex = ex;
+            
+        }
+        
+        return resultStatus;
+        
+    }
+
+    @Override
+    public Result Busqueda(String Nombre, String ApellidoPaterno, String ApellidoMaterno, int IdRol) {
+        
+        Result resultBusqueda = new Result();
+        
+        try {
+            
+            String queryPrincipal = "SELECT u FROM Usuario u WHERE LOWER (u.Nombre) LIKE LOWER (:patronNombre) AND (u.ApellidoPaterno) LIKE LOWER (:patronApellidoPaterno) AND LOWER (u.ApellidoMaterno) LIKE LOWER (:patronApellidoMaterno)";
+            
+            if (IdRol > 0) {
+                
+                queryPrincipal += " AND u.Rol.IdRol = :IdRol"; 
+                
+            }
+            
+            TypedQuery<Usuario> queryBusqueda = entityManager.createQuery(queryPrincipal, Usuario.class);
+            
+            queryBusqueda.setParameter("patronNombre", "%" + Nombre + "%");
+            queryBusqueda.setParameter("patronApellidoPaterno", "%" + ApellidoPaterno + "%");
+            queryBusqueda.setParameter("patronApellidoMaterno", "%" + ApellidoMaterno + "%");
+            
+            if (IdRol > 0) {
+                
+                queryBusqueda.setParameter("IdRol", IdRol);
+                
+            }
+            
+            List<Usuario> usuarios = queryBusqueda.getResultList();
+            
+            resultBusqueda.objects = usuarios.stream().map(usuario -> modelMapper.map(usuario, com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario.class)).collect(Collectors.toList());
+            resultBusqueda.correct = true;
+            
+        } catch (Exception ex) {
+        
+            resultBusqueda.correct = false;
+            resultBusqueda.errorMessage = ex.getLocalizedMessage();
+            resultBusqueda.ex = ex;
+            
+        }
+        
+        return resultBusqueda;
+        
+    }
+    
     
 }

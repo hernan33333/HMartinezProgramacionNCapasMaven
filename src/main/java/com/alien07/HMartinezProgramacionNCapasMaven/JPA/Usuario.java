@@ -4,6 +4,7 @@
  */
 package com.alien07.HMartinezProgramacionNCapasMaven.JPA;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -96,7 +97,7 @@ public class Usuario {
     @Valid
     public Rol Rol;
     
-    @OneToMany(mappedBy = "usuario")
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @Valid
     public List<Direccion> Direcciones;
     

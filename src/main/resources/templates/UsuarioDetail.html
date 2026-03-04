@@ -880,6 +880,15 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
         });
     </script>
 
+    <script th:if="${successMessage}" th:inline="javascript">
+        
+        Swal.fire({
+            title: [[${successMessage}]],
+            icon: "success",
+            draggable: true
+        });
+    </script>
+    
     <script th:if="${successMessageUsuarioUpdate}" th:inline="javascript">
         
         Swal.fire({
