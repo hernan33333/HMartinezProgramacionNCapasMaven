@@ -22,10 +22,13 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         <div class="card shadow-sm border-0 rounded-4">
                             <div class="card-body text-center">
                                 <div class="position-relative mx-auto mb-3" style="width: 180px; height: 180px;">
+                                    <a class="btn btn-outline-primary rounded-pill" th:href="@{/usuario}">
+                                        <i class="bi bi-arrow-return-left" style="font-size: 15px"></i>
+                                        <i class="bi bi-house-door-fill" style="font-size: 15px"></i>
+                                    </a>
                                     <div id="divImagen"
                                          class="w-100 h-100 rounded-circle overflow-hidden border border-3 border-success d-flex justify-content-center align-items-center"
                                          style="background-color: #f8f9fa;">
-
                                         <svg xmlns="http://www.w3.org/2000/svg"
                                              width="120"
                                              height="120"
@@ -35,7 +38,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                              th:if="${usuario.Imagen == null}">
                                             <path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6"/>
                                         </svg>
-
                                         <img id="imagenUsuario"
                                              class="w-100 h-100 object-fit-cover"
                                              th:if="${usuario.Imagen != null}"
@@ -49,9 +51,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                     </button>
 
                                 </div>
-
                                 <h4 class="fw-semibold mb-0" th:text="${usuario.UserName}"></h4>
-
                             </div>
                         </div>
                         <div class="card shadow-sm border-0 rounded-4 mt-4">
@@ -66,10 +66,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                         <i class="bi bi-pencil-square"></i>
                                     </button>
                                 </div>
-
                                 <h5 class="fw-semibold"
-                                    th:text="|${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno ?: ''}|"></h5>
-
+                                    th:text="|${usuario.Nombre} ${usuario.ApellidoPaterno} ${usuario.ApellidoMaterno ?: ''}|">
+                                </h5>
                                 <div class="row mt-3">
                                     <div class="col-6 text-muted">
                                         <i class="bi bi-cake2-fill me-2"></i>
@@ -80,14 +79,11 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                         <span th:text="${usuario.Sexo}"></span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                         <div class="card shadow-sm border-0 rounded-4 mt-4">
                             <div class="card-body">
-
                                 <h5 class="fw-bold mb-3 text-center">Datos de contacto</h5>
-
                                 <div class="row">
                                     <div class="col-6 text-muted">
                                         <i class="bi bi-envelope-at-fill me-2"></i>
@@ -98,20 +94,17 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                         <span th:text="${usuario.Telefono}"></span>
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-7">
                         <div class="card shadow-sm border-0 rounded-4">
                             <div class="card-body">
-
                                 <div class="d-flex justify-content-between align-items-center mb-3">
                                     <h5 class="fw-bold mb-0">
                                         <i class="bi bi-pin-map-fill me-2 text-success"></i>
                                         Direcciones
                                     </h5>
-
                                     <button class="btn btn-success btn-sm rounded-pill"
                                             data-bs-toggle="modal"
                                             data-bs-target="#modalDireccion">
@@ -119,7 +112,6 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                                         Agregar
                                     </button>
                                 </div>
-
                                 <div class="table-responsive">
                                     <table class="table table-hover align-middle">
                                         <thead class="table-light">
@@ -287,63 +279,63 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
                         </div>
                         <div class="modal-body">
                             <div class="container-fluid">
-                                    <div class="row">
-                                        <div class="mb-3 col-lg-6 col-md-12">
-                                            <label for="formularioPais" class="form-label">Pais</label>
-                                            <select id="ddlpais" class="form-select" required>
-                                                <option value=0>Seleccione su pais...</option>
-                                                <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
-                                            </select>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.Estado.Pais.IdPais')}" th:errors='*{Colonia.Municipio.Estado.Pais.IdPais}'></span>
-                                        </div>
-                                        <div class="mb-3 col-lg-6 col-md-12">
-                                            <label for="formularioEstado" class="for-label">Estado</label>
-                                            <select id="ddlestado" class="form-select" th:field="*{Colonia.Municipio.Estado.IdEstado}" required>
-                                                <option value=0>Seleccione un pais primero</option>
-                                                <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}"</option>
-                                            </select>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.Estado.IdEstado')}" th:errors="*{Colonia.Municipio.Estado.IdEstado}"></span>
-                                        </div>
-                                        <div class="mb-3 col-lg-6 col-md-12">
-                                            <label for="formularioMunicipio" class="form-label">Municipio</label>
-                                            <select id="ddlmunicipio" class="form-select" th:field="*{Colonia.Municipio.IdMunicipio}" required>
-                                                <option value=0>Seleccionar un estado primero</option>
-                                                <option th:each="municipio: ${municipios}" th:value="${municipio.IdMunicipio}" th:text="${municipio.Nombre}"></option>
-                                            </select>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.IdMunicipio')}" th:errors="*{Colonia.Municipio.IdMunicipio}"></span>
-                                        </div>
-                                        <div class="mb-3 col-lg-6 mol-md-12">
-                                            <label for="formularioColonia" class="form-label">Colonia:</label>
-                                            <select id="ddlcolonia" class="form-select" th:field="*{Colonia.IdColonia}" required>
-                                                <option value=0>Seleccione un municipio primero</option>
-                                                <option th:each="colonia : ${colonias}" th:value="${colonia.IdColonia}" th:text="${colonia.nombre}"></option>
-                                            </select>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('Colonia.IdColonia')}" th:errors="*{Colonia.IdColonia}"></span>
-                                        </div>
-                                        <div class="mb-3 col-lg-6 col-md-6">
-                                            <label for="formularioCodigoPostal" class="form-label">Código postal</label>
-                                            <input id="codigopostal" type="number" class="form-control" placeholder="12345" th:field="*{Colonia.CodigoPostal}" disabled>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('Colonia.CodigoPostal')}" th:errors="*{Colonia.CodigoPostal}"></span>
-                                        </div>
-                                        <div class="mb-3 col-lg-6 col-md-6">
-                                            <label for="formularioCalle" class="form-label">Calle</label>
-                                            <input type="text" class="form-control" id="Calle" placeholder="Calle" th:field='*{Calle}' onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)" required>
-                                            <span id="errorCalle"></span>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('Calle')}" th:errors='*{Calle}'></span>
-                                        </div>
-                                        <div class="mb-3 col-lg-6 col-md-6">
-                                            <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
-                                            <input type="text" class="form-control" id="NumeroInterior" placeholder="#10" th:field="*{NumeroInterior}">
-                                            <span id="errorNumeroInterior"></span>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('NumeroInterior')}" th:errors="*{NumeroInterior}"></span>
-                                        </div>
-                                        <div class="mb-3 col-lg-6 col-md-6">
-                                            <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
-                                            <input type="text" class="form-control" id="NumeroExterior" placeholder="#123" th:field="*{NumeroExterior}" required>
-                                            <span id="errorNumeroInterior"></span>
-                                            <span class="text-danger" th:if="${#fields.hasErrors('NumeroExterior')}" th:errors="*{NumeroExterior}"></span>
-                                        </div>
+                                <div class="row">
+                                    <div class="mb-3 col-lg-6 col-md-12">
+                                        <label for="formularioPais" class="form-label">Pais</label>
+                                        <select id="ddlpais" class="form-select" required>
+                                            <option value=0>Seleccione su pais...</option>
+                                            <option th:each="pais : ${paises}" th:value="${pais.IdPais}" th:text="${pais.Nombre}"></option>
+                                        </select>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.Estado.Pais.IdPais')}" th:errors='*{Colonia.Municipio.Estado.Pais.IdPais}'></span>
                                     </div>
+                                    <div class="mb-3 col-lg-6 col-md-12">
+                                        <label for="formularioEstado" class="for-label">Estado</label>
+                                        <select id="ddlestado" class="form-select" th:field="*{Colonia.Municipio.Estado.IdEstado}" required>
+                                            <option value=0>Seleccione un pais primero</option>
+                                            <option th:each="estado : ${estados}" th:value="${estado.IdEstado}" th:text="${estado.Nombre}"</option>
+                                        </select>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.Estado.IdEstado')}" th:errors="*{Colonia.Municipio.Estado.IdEstado}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-12">
+                                        <label for="formularioMunicipio" class="form-label">Municipio</label>
+                                        <select id="ddlmunicipio" class="form-select" th:field="*{Colonia.Municipio.IdMunicipio}" required>
+                                            <option value=0>Seleccionar un estado primero</option>
+                                            <option th:each="municipio: ${municipios}" th:value="${municipio.IdMunicipio}" th:text="${municipio.Nombre}"></option>
+                                        </select>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.Municipio.IdMunicipio')}" th:errors="*{Colonia.Municipio.IdMunicipio}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 mol-md-12">
+                                        <label for="formularioColonia" class="form-label">Colonia:</label>
+                                        <select id="ddlcolonia" class="form-select" th:field="*{Colonia.IdColonia}" required>
+                                            <option value=0>Seleccione un municipio primero</option>
+                                            <option th:each="colonia : ${colonias}" th:value="${colonia.IdColonia}" th:text="${colonia.nombre}"></option>
+                                        </select>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.IdColonia')}" th:errors="*{Colonia.IdColonia}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-6">
+                                        <label for="formularioCodigoPostal" class="form-label">Código postal</label>
+                                        <input id="codigopostal" type="number" class="form-control" placeholder="12345" th:field="*{Colonia.CodigoPostal}" disabled>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Colonia.CodigoPostal')}" th:errors="*{Colonia.CodigoPostal}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-6">
+                                        <label for="formularioCalle" class="form-label">Calle</label>
+                                        <input type="text" class="form-control" id="Calle" placeholder="Calle" th:field='*{Calle}' onkeypress="LetrasYNumeros(this, event)" onblur="LetrasYNumerosBlur(this)" required>
+                                        <span id="errorCalle"></span>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('Calle')}" th:errors='*{Calle}'></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-6">
+                                        <label for="formularioNumeroInterior" class="form-label">Numero interior</label>
+                                        <input type="text" class="form-control" id="NumeroInterior" placeholder="#10" th:field="*{NumeroInterior}">
+                                        <span id="errorNumeroInterior"></span>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('NumeroInterior')}" th:errors="*{NumeroInterior}"></span>
+                                    </div>
+                                    <div class="mb-3 col-lg-6 col-md-6">
+                                        <label for="formularioNumeroExterior" class="form-label">Numero exterior</label>
+                                        <input type="text" class="form-control" id="NumeroExterior" placeholder="#123" th:field="*{NumeroExterior}" required>
+                                        <span id="errorNumeroInterior"></span>
+                                        <span class="text-danger" th:if="${#fields.hasErrors('NumeroExterior')}" th:errors="*{NumeroExterior}"></span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="modal-footer">

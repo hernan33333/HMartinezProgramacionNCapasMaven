@@ -5,7 +5,6 @@
 package com.alien07.HMartinezProgramacionNCapasMaven.RestController;
 
 import com.alien07.HMartinezProgramacionNCapasMaven.DAO.UsuarioDAOJPAImplementation;
-import com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

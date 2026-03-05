@@ -138,7 +138,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Other/html.html to edit this temp
             
             $.ajax({
                
-               url:"usuario/actualizar/" + $(input).val() + "/status/" + cambiarStatus,
+               url:"actualizar/" + $(input).val() + "/status/" + cambiarStatus,
                type:"post",
                dataType:"json",
                success: function (data, textStatus, jqXHR) {
