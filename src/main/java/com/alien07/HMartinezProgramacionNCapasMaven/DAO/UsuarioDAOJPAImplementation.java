@@ -36,7 +36,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("FROM Usuario", Usuario.class);
+            TypedQuery<Usuario> queryUsuario = entityManager.createQuery("FROM Usuario ORDER BY IdUsuario ASC", Usuario.class);
             List<Usuario> usuarios = queryUsuario.getResultList();
             
             resultAll.objects = usuarios.stream().map(usuario -> modelMapper.map(usuario, com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario.class)).collect(Collectors.toList());
@@ -410,7 +410,7 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
                 Usuario usuario = usuariosJPA.get(i);
                 entityManager.persist(usuario);
                 
-                if (i % 50 == 0) {
+                if (i % 50 == 0 && i > 0) {
                     
                     entityManager.flush();
                     entityManager.clear();
@@ -479,7 +479,12 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
         
         try {
             
-            String queryPrincipal = "FROM Usuario WHERE LOWER (Nombre) LIKE LOWER (:patronNombre) AND LOWER (ApellidoPaterno) LIKE LOWER (:patronApellidoPaterno) AND LOWER (ApellidoMaterno) LIKE LOWER (:patronApellidoMaterno)";
+            String queryPrincipal = """
+                                    FROM Usuario
+                                    WHERE (:nombre IS NULL OR LOWER (Nombre) LIKE LOWER (:nombre))
+                                    AND (:apellidoP IS NULL OR LOWER (ApellidoPaterno) LIKE LOWER (:apellidoP))
+                                    AND (:apellidoM IS NULL OR LOWER (ApellidoMaterno) LIKE LOWER (:apellidoM))
+                                    """;
             
             if (IdRol > 0) {
                 
@@ -489,9 +494,9 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
             
             TypedQuery<Usuario> queryBusqueda = entityManager.createQuery(queryPrincipal, Usuario.class);
             
-            queryBusqueda.setParameter("patronNombre", "%" + Nombre + "%");
-            queryBusqueda.setParameter("patronApellidoPaterno", "%" + ApellidoPaterno + "%");
-            queryBusqueda.setParameter("patronApellidoMaterno", "%" + ApellidoMaterno + "%");
+            queryBusqueda.setParameter("nombre", (Nombre == null || Nombre.isBlank()) ? null : "%" + Nombre + "%");
+            queryBusqueda.setParameter("apellidoP", (ApellidoPaterno == null || ApellidoPaterno.isBlank()) ? null : "%" + ApellidoPaterno + "%");
+            queryBusqueda.setParameter("apellidoM", (ApellidoMaterno == null || ApellidoMaterno.isBlank()) ? null : "%" + ApellidoMaterno + "%");
             
             if (IdRol > 0) {
                 
@@ -502,6 +507,11 @@ public class UsuarioDAOJPAImplementation implements IUsuarioJPA {
             List<Usuario> usuarios = queryBusqueda.getResultList();
             
             resultBusqueda.objects = usuarios.stream().map(usuario -> modelMapper.map(usuario, com.alien07.HMartinezProgramacionNCapasMaven.ML.Usuario.class)).collect(Collectors.toList());
+            
+            if (resultBusqueda.objects.isEmpty()) {
+                
+                resultBusqueda.errorMessage = "No se encontraron registros en la BD";
+            }
             
             resultBusqueda.correct = true;
             

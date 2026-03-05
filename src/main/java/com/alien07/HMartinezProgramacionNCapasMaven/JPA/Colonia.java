@@ -11,10 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 /**
  *
@@ -26,9 +22,6 @@ public class Colonia {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idcolonia")
-    @NotNull(message = "Debe de elegir una colonia")
-    @Positive(message = "Colonia no válida")
-    @Min(value = 1, message = "Debe de elegir una colonia")
     private int IdColonia;
     
     @Column(name = "nombre")
@@ -39,7 +32,6 @@ public class Colonia {
     
     @ManyToOne
     @JoinColumn(name = "idmunicipio")
-    @Valid
     public Municipio Municipio;
     
     public Colonia(){

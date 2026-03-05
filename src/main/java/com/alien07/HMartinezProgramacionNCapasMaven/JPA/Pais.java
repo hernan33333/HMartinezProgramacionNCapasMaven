@@ -9,9 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 /**
  *
@@ -23,9 +20,6 @@ public class Pais {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idpais")
-    @NotNull(message = "Debe de elegir un pais")
-    @Positive(message = "Pais no válido")
-    @Min(value = 1, message = "Debe de elegir un pais")
     private int IdPais;
     
     @Column(name = "nombre")

@@ -11,10 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 /**
  *
@@ -26,9 +22,6 @@ public class Municipio {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "idmunicipio")
-    @NotNull(message = "Debe de elegir un municipio")
-    @Positive(message = "Municipio no válido")
-    @Min(value = 1, message = "Debe de elegir un municipio")
     private int IdMunicipio;
     
     @Column(name = "nombre")
@@ -36,7 +29,6 @@ public class Municipio {
     
     @ManyToOne
     @JoinColumn(name = "idestado")
-    @Valid
     public Estado Estado;
     
     public Municipio(){

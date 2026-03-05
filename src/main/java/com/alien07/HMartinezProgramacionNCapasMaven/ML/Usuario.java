@@ -51,7 +51,7 @@ public class Usuario {
     @Size(max = 254, message = "Email demasiado largo")
     private String Email;
     
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[`~!@#$%^&\\.\\*()_])[a-zA-Z\\d`~!@#$%^&\\.\\*()_]+$", message = "Debe de contener al menos 1 minúscula, 1 mayúscula, 1 número, 1 carácter especial")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[~!@#\\$%\\^&\\*()_\\+\\=¿\\?;:\\-<>\\.,\\\\|])[a-zA-Z\\d~!@#\\$%\\^&\\*()_\\+=-¿\\?;:<>\\.,]+$", message = "Debe de contener al menos 1 minúscula, 1 mayúscula, 1 número, 1 carácter especial")
     @NotEmpty(message = "Debe de introducir una contraseña")
     @Size(min = 8, max = 16, message = "Mínimo 8 carácteres y máximo 16")
     private String Password;
@@ -66,7 +66,7 @@ public class Usuario {
     
     private String Imagen;
     
-    private int Status;
+    private int Status = 1;
     
     @Valid
     public Rol Rol;

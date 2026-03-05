@@ -9,7 +9,6 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.validation.constraints.NotNull;
 
 /**
  *
@@ -21,7 +20,6 @@ public class Rol {
     @Id
     @Column(name = "idrol")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @NotNull(message = "Debe de elegir un rol")
     private int IdRol;
     
     @Column(name = "nombre")

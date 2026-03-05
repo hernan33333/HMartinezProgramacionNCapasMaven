@@ -12,10 +12,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 
 /**
  *
@@ -30,25 +26,16 @@ public class Direccion {
     private int IdDireccion;
     
     @Column(name = "calle")
-    @NotEmpty(message = "Debe de introducir una calle")
-    @Pattern(regexp = "^[a-zA-Z\\d ]+$", message = "Sólo se admiten letras y números")
-    @Size(min = 1, max = 100, message = "Más de 2 carácteres y menos de 100")
     private String Calle;
     
     @Column(name = "numerointerior")
-    @Pattern(regexp = "[a-zA-Z\\d]+", message = "Sólo se aceptan letras y números")
-    @Size(min = 1, max = 20, message = "Más de 1 carácter y menos de 20")
     private String NumeroInterior;
     
     @Column(name = "numeroexterior")
-    @Pattern(regexp = "[a-zA-Z\\d]+", message = "Sólo se aceptan letras y números")
-    @NotEmpty(message = "Debe introducir un valor")
-    @Size(min = 1, max = 20, message = "Más de 1 carácter y menos de 20")
     private String NumeroExterior;
     
     @ManyToOne
     @JoinColumn(name = "idcolonia")
-    @Valid
     public Colonia Colonia;
     
     @ManyToOne(fetch = FetchType.LAZY)
